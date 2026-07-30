@@ -69,6 +69,21 @@ def sec41_cause():
               f"潜在変数の絶対値の最大 {ok['latent_absmax'].min():.4f}〜{ok['latent_absmax'].max():.4f}")
 
 
+def sec41_buffer():
+    head("第4.1節 加算元バッファの中身（exp10_buffer_content.py の出力）")
+    f = os.path.join(R, "exp10_buffer_content.csv")
+    if not os.path.exists(f):
+        return print("  exp10_buffer_content.csv が無い。`python3 exp10_buffer_content.py` を実行する")
+    d = pd.read_csv(f)
+    for r in d.itertuples():
+        print(f"  {r.dtype}: 呼び出し {r.calls}  潜在変数NaN={r.latent_nan}  "
+              f"非有限を含むバッファ {r.buffers_with_nonfinite}/{r.calls}  "
+              f"非有限要素 {r.nonfinite_elements}/{r.elements_checked}"
+              f"（{r.nonfinite_ratio * 100:.1f}%）")
+        print(f"      最初に非有限が出た呼び出し {r.first_dirty_call} / "
+              f"最初に出力が NaN になった呼び出し {r.first_nan_out_call}")
+
+
 def sec41_bench():
     head("第4.1節 fp16 と fp32 の生成時間（ウォームアップ1回を捨てて3回）")
     f = os.path.join(R, "bench_dtype.csv")
@@ -399,7 +414,7 @@ def sec41_slicing():
 
 
 if __name__ == "__main__":
-    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_bench, sec42_density, sec5_probe,
+    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_bench, sec42_density, sec5_probe,
                sec5_spatial, sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
                sec7_conflict, sec8_tradeoff):
         fn()
