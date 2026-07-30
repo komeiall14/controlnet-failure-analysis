@@ -168,10 +168,18 @@ def verify(path):
     face = pdfmetrics.getFont("Mincho").face
     # charToGlyph のキーは文字ではなくコードポイント。文字で引くと必ず None になり
     # 全文字を欠字と誤判定する（実際に一度やった）。
-    missing = {c for c in txt if ord(c) > 0x2000 and c not in "\n\r\t"
+    #
+    # ★抽出後のテキストで欠字を探してはいけない。グリフが無い文字は抽出時点で
+    # すでに NUL に化けており、ord > 0x2000 の条件に掛からず永久に検出できない。
+    # 実際 3.4×10⁻⁵ の上付きマイナス(U+207B)がこの穴をすり抜け、PDF 上では
+    # 3.4×10□⁵ と、指数の符号が消えた形で出ていた。原稿側を検査する。
+    src = open(SRC, encoding="utf-8").read()
+    missing = {c for c in src if ord(c) > 0x2000 and c not in "\n\r\t"
                and face.charToGlyph.get(ord(c)) is None}
     if missing:
         print(f"  ★欠字 {len(missing)}種: {''.join(sorted(missing))[:40]}"); ok = False
+    elif "\x00" in txt:
+        print("  ★PDF 内に NUL（描画されなかった文字）がある"); ok = False
     else:
         print("  欠字: なし")
     print(f"  抽出文字数: {len(txt)}")

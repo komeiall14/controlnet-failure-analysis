@@ -1,6 +1,6 @@
 """ControlNet の失敗条件を実験的に切り出す。
 
-exp1  条件マップの密度と構造整合の関係（固定閾値の縮退）
+exp1  条件地図の密度と構造整合の関係（固定閾値の縮退）
 exp2  controlnet_conditioning_scale の入力依存感度
 exp3  改善（密度適応 Canny ＋ 密度連動 scale）の前後比較
 
@@ -102,7 +102,7 @@ def smoke():
 
 
 def exp1():
-    """固定閾値のもとで、条件マップの密度が構造整合をどう決めるか。"""
+    """固定閾値のもとで、条件地図の密度が構造整合をどう決めるか。"""
     rows = []
     for name, img, prompt in ds.synthetic_images() + ds.real_images():
         for a, dim in ds.contrast_series(img):
@@ -262,6 +262,7 @@ def exp5():
             if slicing != "なし":
                 p.enable_attention_slicing(slicing)
             g = torch.Generator(device="cpu").manual_seed(0)
+            t0 = time.time()
             try:
                 lat = p(prompt, image=cond, num_inference_steps=4, generator=g,
                         output_type="latent").images.float().cpu()
@@ -270,10 +271,11 @@ def exp5():
                 err = ""
             except Exception as ex:
                 nan, amax, err = True, float("nan"), type(ex).__name__
+            sec = time.time() - t0
             rows.append(dict(dtype=dtype_name, slicing=str(slicing),
-                             nan=nan, absmax=amax, error=err))
-            print(f"  {dtype_name} slicing={slicing}: NaN={nan} absmax={amax:.2f}",
-                  flush=True)
+                             nan=nan, absmax=amax, error=err, sec=round(sec, 2)))
+            print(f"  {dtype_name} slicing={slicing}: NaN={nan} absmax={amax:.2f} "
+                  f"{sec:.1f}秒", flush=True)
             log_rows("exp5_slicing", rows)
             del p, cn; gc.collect(); torch.mps.empty_cache()
 

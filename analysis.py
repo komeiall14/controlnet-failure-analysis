@@ -33,7 +33,7 @@ def load(name):
 
 
 def fig1_density():
-    """失敗条件1: 条件マップの密度と構造整合。"""
+    """失敗条件1: 条件地図の密度と構造整合。"""
     df = load("exp1_density")
     if df is None or len(df) < 4:
         return print("exp1: データ不足")
@@ -45,7 +45,7 @@ def fig1_density():
     ax[0].scatter(syn["cond_density"], syn["f1"], s=46, c=RED, marker="^",
                   label="合成画像", zorder=3)
     ax[0].set_xscale("log")
-    ax[0].set_xlabel("条件マップのエッジ画素率（対数）")
+    ax[0].set_xlabel("条件地図のエッジ画素率（対数）")
     ax[0].set_ylabel("構造整合 edge F1")
     ax[0].set_title("固定閾値(100,200)では密度が\n下がると条件が効かなくなる")
     ax[0].legend(fontsize=10)
@@ -66,7 +66,11 @@ def fig1_density():
 
 
 def fig2_scale():
-    """失敗条件2: conditioning_scale の最適値が入力に依存する。"""
+    """失敗条件2: 推論時の既定 scale が構造整合に対して弱い。
+
+    当初は「最適値が入力の密度に依存する」と予想したが外れた（本文第4.3節）。
+    構造整合だけで選ぶと全入力で掃引範囲の上限が最良になる。
+    """
     df = load("exp2_scale")
     if df is None or len(df) < 4:
         return print("exp2: データ不足")
@@ -82,13 +86,13 @@ def fig2_scale():
     ax[0].text(1.02, ax[0].get_ylim()[0], "既定値 1.0", color=GRAY, fontsize=9)
     ax[0].set_xlabel("controlnet_conditioning_scale")
     ax[0].set_ylabel("構造整合 edge F1")
-    ax[0].set_title("最適な scale は入力ごとに異なる")
+    ax[0].set_title("既定 1.0 は構造整合に対して弱い")
     ax[0].legend(fontsize=8, ncol=2)
 
     b = pd.DataFrame(best)
     ax[1].scatter(b["density"], b["best_scale"], s=70, c=RED, zorder=3)
     ax[1].set_xscale("log")
-    ax[1].set_xlabel("条件マップのエッジ画素率（対数）")
+    ax[1].set_xlabel("条件地図のエッジ画素率（対数）")
     ax[1].set_ylabel("F1 を最大化する scale")
     ax[1].set_title("密度と scale は同じ資源の\n二つの支払い方になっている")
     if len(b) > 2:

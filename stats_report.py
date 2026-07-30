@@ -1,4 +1,4 @@
-"""レポート本文に載せた統計量を、すべてここから再現する。
+"""レポート本文に載せた統計量を再現する。
 
 analysis.py は図を描くためのもので、fig1 と fig3 には本文が採らなかった扱い
 （定義上 0 になる条件を含む相関、1画像6行をプールした検定）が残っている。
@@ -30,9 +30,12 @@ def head(t):
 
 
 def sec3_env():
-    head("第3節 生成速度")
+    head("第3節 生成速度（20ステップ・512×512）")
     s = []
     for f in glob.glob(os.path.join(R, "*.csv")):
+        # exp5 は第4.1節の切り分け用で DDIM 4ステップ。条件が違うので混ぜない
+        if os.path.basename(f).startswith("exp5_"):
+            continue
         d = pd.read_csv(f)
         if "sec" in d.columns:
             s += d["sec"].dropna().tolist()
@@ -143,6 +146,21 @@ def sec5_probe():
           f"（{orig['total_rms'].mean() / flat['total_rms'].mean():.2f}倍）")
 
 
+def sec5_spatial():
+    head("第5節 残差の空間構造（probe_spatial.py の出力）")
+    f = os.path.join(R, "probe_spatial.csv")
+    if not os.path.exists(f):
+        return print("  probe_spatial.csv が無い。`python3 probe_spatial.py` を実行する")
+    s = pd.read_csv(f)
+    for r in s.itertuples():
+        print(f"  {r.source:14s} 密度={r.density:.5f}  "
+              f"mid RMS={r.mid_rms:.4f} 空間成分={r.mid_spatial_rms:.4f}"
+              f"（{r.mid_spatial_frac * 100:.1f}%）  "
+              f"down6 の空間成分={r.down6_spatial_frac * 100:.1f}%")
+    print("  ※ 空間成分＝チャネルごとの空間平均を引いた残差の RMS。"
+          "0 に近ければ一様な場、1 に近ければ空間的に変化している")
+
+
 def sec6_improvement():
     head("第6節 改善前後（α層別・画像単位。プールした検定は使わない）")
     d = load("exp3_improvement")
@@ -171,7 +189,7 @@ def sec8_tradeoff():
     print(f"\n  画像内の相関（n={len(rf)}画像。全70点は同一画像から10段階なので独立でない）")
     print(f"    scale-構造整合  中央値={np.median(rf):+.3f}  正={int((rf > 0).sum())}/{len(rf)}")
     print(f"    scale-プロンプト 中央値={np.median(rc):+.3f}  負={int((rc < 0).sum())}/{len(rc)}"
-          f"  最大={rc.max():+.3f}  符号検定 p={w.pvalue:.3f}")
+          f"  最大={rc.max():+.3f}  Wilcoxon符号順位検定 p={w.pvalue:.3f}")
 
 
 def sec41_slicing():
@@ -181,7 +199,7 @@ def sec41_slicing():
 
 if __name__ == "__main__":
     for fn in (sec3_env, sec41_slicing, sec42_density, sec5_probe,
-               sec6_improvement, sec8_tradeoff):
+               sec5_spatial, sec6_improvement, sec8_tradeoff):
         fn()
     print("\n" + "=" * 66)
     print("以上がレポート本文に記載した統計量のすべてである。")
