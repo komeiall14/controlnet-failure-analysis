@@ -1,3 +1,3 @@
-dtype,calls,latent_nan,buffers_with_nonfinite,elements_checked,nonfinite_elements,nonfinite_ratio,first_dirty_call,first_nan_out_call,finite_absmax
-fp16,2944,True,2847,8201920512,7408303874,0.903240145178,64,64,65504.0
-fp32,2944,False,0,8201920512,0,0.0,,,3.4028234663852886e+38
+dtype,calls,latent_nan,buffers_with_nonfinite,elements_checked,nonfinite_elements,nonfinite_ratio,first_dirty_call,first_nan_out_call,finite_absmax,top_bit_patterns
+fp16,2944,True,2847,8201920512,7408303874,0.903240145178,64,64,65504.0,"[[(31752, 8), (31776, 8)], [(32256, 3000)], [(32256, 3000)]]"
+fp32,2944,False,0,8201920512,0,0.0,,,3.4028234663852886e+38,[]

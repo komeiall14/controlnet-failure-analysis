@@ -43,7 +43,7 @@ def run(dtype_name):
     p.enable_attention_slicing(1)
 
     orig = Attention.get_attention_scores
-    st = {"calls": 0, "dirty": 0, "elems": 0, "bad": 0,
+    st = {"calls": 0, "dirty": 0, "elems": 0, "bad": 0, "patterns": [],
           "first_dirty": None, "first_nan_out": None, "absmax": 0.0}
 
     def probe(self, query, key, attention_mask=None):
@@ -62,6 +62,14 @@ def run(dtype_name):
         f = buf[fin]
         if f.numel():
             st["absmax"] = max(st["absmax"], float(f.abs().max()))
+        # 非有限値の生のビット列を見る。ランダムなゴミなら値がばらけ、
+        # 特定のパターンに集中していれば、それが何であるかが分かる。
+        if nbad and len(st["patterns"]) < 6:
+            c = buf.detach().cpu()
+            bits = c.view(torch.int16 if buf.dtype == torch.float16 else torch.int32).flatten()
+            m = (~torch.isfinite(c)).flatten()
+            from collections import Counter
+            st["patterns"].append(Counter(bits[m][:3000].tolist()).most_common(2))
         sc = torch.baddbmm(buf, query, key.transpose(-1, -2),
                            beta=0, alpha=self.scale)
         del buf
@@ -91,13 +99,17 @@ def run(dtype_name):
              nonfinite_ratio=round(st["bad"] / max(st["elems"], 1), 12),
              first_dirty_call=st["first_dirty"],
              first_nan_out_call=st["first_nan_out"],
-             finite_absmax=round(st["absmax"], 4))
+             finite_absmax=round(st["absmax"], 4),
+             top_bit_patterns=str(st["patterns"][:3]))
     print(f"  {dtype_name}: 呼び出し {r['calls']}  潜在変数NaN={nan}")
     print(f"    非有限を含むバッファ {r['buffers_with_nonfinite']}/{r['calls']}")
     print(f"    非有限の要素 {r['nonfinite_elements']} / {r['elements_checked']}")
     print(f"    最初に非有限が出た呼び出し {r['first_dirty_call']}  "
           f"／ 最初に出力が NaN になった呼び出し {r['first_nan_out_call']}")
-    print(f"    バッファ内の有限値の絶対値最大 {r['finite_absmax']}", flush=True)
+    print(f"    バッファ内の有限値の絶対値最大 {r['finite_absmax']}")
+    if st["patterns"]:
+        print(f"    非有限値の生ビット列（上位）{st['patterns'][:3]}")
+    print(flush=True)
     return r
 
 
