@@ -33,10 +33,10 @@ pdfmetrics.registerFont(TTFont("Mincho", os.path.join(DF, "yumin.ttf")))
 pdfmetrics.registerFont(TTFont("GothicB", os.path.join(DF, "YuGothB.ttc"),
                                subfontIndex=0))
 
-BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.6,
+BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.3,
                       firstLineIndent=9.9, alignment=TA_LEFT,
                       wordWrap="CJK", textColor=colors.black,
-                      spaceAfter=2)
+                      spaceAfter=1.5)
 NOIND = ParagraphStyle("noind", parent=BODY, firstLineIndent=0)
 H1 = ParagraphStyle("h1", fontName="GothicB", fontSize=15, leading=20,
                     spaceBefore=2, spaceAfter=8, textColor=colors.black,
@@ -145,9 +145,9 @@ def build():
                                    META if "／" in s and len(s) < 90 else BODY))
     flush_table()
 
-    doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=17 * mm,
-                            bottomMargin=15 * mm, leftMargin=18 * mm,
-                            rightMargin=18 * mm, title=OUTNAME[:-4])
+    doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=15 * mm,
+                            bottomMargin=14 * mm, leftMargin=17 * mm,
+                            rightMargin=17 * mm, title=OUTNAME[:-4])
     doc.build(story)
     return OUT
 

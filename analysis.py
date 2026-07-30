@@ -162,16 +162,18 @@ def fig4_probe():
                    marker="x", zorder=3, label=f"エッジ画素率0 (n={len(zero)})")
         ax.axvline(zx * 1.8, color=GRAY, ls=":", lw=1)
     # ★空白地図の基準線は描かない。
-    # 密度0の条件地図は全画素0で、参照に使った空白地図とビット単位で同一の入力である。
-    # timestep と潜在変数も固定しているので一致は測定前から確定しており、
-    # 恒等式を経験的な一致として見せることになる（本文第5節で撤回済み）。
+    # 密度0の条件地図は全画素0で、参照に使った空白地図と同一の条件地図である。
+    # 密度を動かしていない比較なので、値が近くても密度の効果については
+    # 何も語らない（本文第5節で撤回済み）。
     ax.set_xscale("log")
-    ax.set_xlabel("条件マップのエッジ画素率（対数。左端の×は画素率0）")
+    ax.set_xlabel("条件地図のエッジ画素率（対数。左端の×は画素率0）")
     ax.set_ylabel("UNet へ注入される残差の RMS")
     ax.set_title("密度が下がると zero-convolution 経由の\n残差そのものが縮む")
     ax.legend(fontsize=9, loc="lower right")
     r = stats.spearmanr(m["density"], m["total_rms"])
-    ax.text(0.03, 0.9, f"Spearman ρ={r.correlation:+.3f}\np={r.pvalue:.2g}",
+    dd = m.drop_duplicates(subset=["source", "total_rms"])
+    r2 = stats.spearmanr(dd["density"], dd["total_rms"])
+    ax.text(0.03, 0.9, f"Spearman ρ={r.correlation:+.3f}\n重複除去 ρ={r2.correlation:+.3f}",
             transform=ax.transAxes, fontsize=10,
             bbox=dict(fc="white", alpha=.85, ec=GRAY))
     fig.tight_layout()
