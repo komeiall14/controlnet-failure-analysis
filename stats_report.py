@@ -81,7 +81,8 @@ def sec42_density():
                 floor.append(P.edge_f1(P.canny(tbl[other]), g)["f1"])
     u = stats.mannwhitneyu(zs, floor)
     print(f"\n  本来の輪郭との一致  正しく条件づけ={np.mean(os_):.4f} (n={len(os_)})")
-    print(f"                      密度0        ={np.mean(zs):.4f} (n={len(zs)})")
+    print(f"                      密度0        ={np.mean(zs):.4f} (n={len(zs)}"
+          f"、中央値={np.median(zs):.4f}、sd={np.std(zs, ddof=1):.4f})")
     print(f"                      偶然の水準    ={np.mean(floor):.4f} (n={len(floor)})")
     print(f"                      Mann-Whitney p={u.pvalue:.3f}")
 
@@ -120,6 +121,12 @@ def sec5_probe():
     r2 = stats.spearmanr(dd["density"], dd["total_rms"])
     print(f"  順伝播 {len(m)} 回        rho={r.correlation:+.3f} p={r.pvalue:.2g}")
     print(f"  地図とプロンプトの組 {len(dd)} 件  rho={r2.correlation:+.3f}")
+    # 密度0の45回を除いた内訳。本文はこの落差も併記している
+    nz = m[m["density"] > 0]
+    nzd = nz.drop_duplicates(subset=["source", "total_rms"])
+    print(f"  密度>0のみ {len(nz)} 回   rho={stats.spearmanr(nz['density'], nz['total_rms']).correlation:+.3f}"
+          f"  / 重複除去 {len(nzd)} 件 rho="
+          f"{stats.spearmanr(nzd['density'], nzd['total_rms']).correlation:+.3f}")
     b = pd.cut(m["density"], [-1e-9, 1e-9, .005, .02, .05, 1],
                labels=["0", "〜0.005", "〜0.02", "〜0.05", "0.05〜"])
     print(m.groupby(b, observed=True).agg(n=("total_rms", "size"),
@@ -173,6 +180,32 @@ def sec6_improvement():
         print(f"  α={a}  n={len(p)}画像  改善={int((diff > 0).sum())}/{len(p)}  "
               f"Δ中央値={diff.median():+.4f}  Wilcoxon p={w.pvalue:.4f}  "
               f"密度 {p['db'].mean():.4f}→{p['da'].mean():.4f}  scale平均={p['sc'].mean():.3f}")
+        # 条件地図が空だった画像だけを取り出す（本文はこの回復幅を別に述べている）
+        emp = p[p["db"] == 0]
+        if len(emp):
+            de = emp["after"] - emp["before"]
+            print(f"        うち改善前の密度が0だった {len(emp)}画像  "
+                  f"Δ中央値={de.median():+.4f}  密度 0→{emp['da'].mean():.4f}")
+        # 個々の画像の扱いで結論が動くかを見る感度分析
+        for drop in (["synth_veryd"], ["cell", "chelsea"]):
+            q = p.drop([x for x in drop if x in p.index], errors="ignore")
+            if len(q) == len(p) or len(q) < 3:
+                continue
+            dq = q["after"] - q["before"]
+            wq = stats.wilcoxon(q["after"], q["before"])
+            print(f"        {'+'.join(drop)} を除く: n={len(q)}  "
+                  f"改善={int((dq > 0).sum())}/{len(q)}  Δ中央値={dq.median():+.4f}  "
+                  f"p={wq.pvalue:.4f}")
+
+
+def sec7_conflict():
+    head("第7節 条件とプロンプトの衝突（予想が外れた検証）")
+    d = load("exp4_conflict")
+    g = d.groupby("kind")["f1"].agg(n="size", 平均="mean", 中央値="median").round(4)
+    print(g.to_string())
+    c = d[d["kind"] != "match"].groupby("kind")["f1"].mean()
+    print(f"  一致条件の平均={d[d['kind'] == 'match']['f1'].mean():.4f}  "
+          f"衝突条件の平均は {c.min():.4f}〜{c.max():.4f} に分布")
 
 
 def sec8_tradeoff():
@@ -199,7 +232,7 @@ def sec41_slicing():
 
 if __name__ == "__main__":
     for fn in (sec3_env, sec41_slicing, sec42_density, sec5_probe,
-               sec5_spatial, sec6_improvement, sec8_tradeoff):
+               sec5_spatial, sec6_improvement, sec7_conflict, sec8_tradeoff):
         fn()
     print("\n" + "=" * 66)
     print("以上がレポート本文に記載した統計量のすべてである。")
