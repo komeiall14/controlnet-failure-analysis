@@ -39,6 +39,8 @@ pdfmetrics.registerFont(TTFont("Mincho", os.path.join(DF, "yumin.ttf")))
 pdfmetrics.registerFont(TTFont("GothicB", os.path.join(DF, "YuGothB.ttc"),
                                subfontIndex=0))
 
+# ※allowWidows/allowOrphans は wordWrap='CJK' と併用すると
+#   reportlab が FragLine で落ちるので使わない。
 BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.6,
                       firstLineIndent=9.9, alignment=TA_LEFT,
                       wordWrap="CJK", textColor=colors.black,
@@ -48,10 +50,10 @@ H1 = ParagraphStyle("h1", fontName="GothicB", fontSize=15, leading=20,
                     spaceBefore=2, spaceAfter=8, textColor=colors.black,
                     wordWrap="CJK")
 H2 = ParagraphStyle("h2", fontName="GothicB", fontSize=11.6, leading=16,
-                    spaceBefore=8, spaceAfter=3, textColor=colors.black,
+                    spaceBefore=6, spaceAfter=2.5, textColor=colors.black,
                     wordWrap="CJK")
 H3 = ParagraphStyle("h3", fontName="GothicB", fontSize=10.8, leading=15,
-                    spaceBefore=7, spaceAfter=3, textColor=colors.black,
+                    spaceBefore=5.5, spaceAfter=2.5, textColor=colors.black,
                     wordWrap="CJK")
 META = ParagraphStyle("meta", parent=NOIND, fontSize=9.4, leading=13.4)
 # 参考文献は本文より一段小さく組む（学術誌の慣例）
@@ -139,12 +141,19 @@ def build():
                 iw, ih = PILImage.open(p).size
                 # 縦長の図（散布図）は幅を詰める。横長の並び図は情報密度が高いので
                 # 幅を保つ。どちらも本文幅を超えない範囲に収める。
-                wmm = 158 if iw / ih > 1.5 else 132
+                # 横長の並び図は情報密度が高いので幅を保つ。
+                # 縦長の散布図は大きくしても情報が増えないので抑える。
+                wmm = 152 if iw / ih > 2.0 else 138
                 w = min(A4[0] - 36 * mm, wmm * mm)
-                story.append(Image(p, width=w, height=w * ih / iw))
+                # 図とキャプションは離さない。ただし塊にすると前ページに
+                # 収まらないときに丸ごと送られて下端が空くので、
+                # 図の直前に改ページを許す余地を残す。
+                from reportlab.platypus import KeepTogether
+                block = [Image(p, width=w, height=w * ih / iw)]
                 if m.group(1):
-                    story.append(Paragraph(inline(m.group(1)), CAP))
-                story.append(Spacer(1, 5))
+                    block.append(Paragraph(inline(m.group(1)), CAP))
+                story.append(KeepTogether(block))
+                story.append(Spacer(1, 4))
         elif re.match(r"^[-*] ", s):
             story.append(Paragraph("・" + inline(s[2:]), NOIND))
         elif re.match(r"^\d+\. ", s):

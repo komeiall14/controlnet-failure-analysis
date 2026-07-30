@@ -95,6 +95,17 @@ def sec41_beta():
         print(f"  {dev}: 規約どおり {int(g['honors_beta0'].sum())}/{len(g)} 条件")
 
 
+def sec41_fix():
+    head("第4.1節 修正が実用になるか（exp12_fix_usable.py、20ステップ）")
+    f = os.path.join(R, "exp12_fix_usable.csv")
+    if not os.path.exists(f):
+        return print("  exp12_fix_usable.csv が無い。`python3 exp12_fix_usable.py` を実行する")
+    d = pd.read_csv(f)
+    print(d.groupby("cond").agg(壊れた枚数=("broken", "sum"), n=("broken", "size"),
+                                edgeF1平均=("f1", "mean"),
+                                メモリGB=("mem_gb", "max")).round(4).to_string())
+
+
 def sec41_bench():
     head("第4.1節 fp16 と fp32 の生成時間（ウォームアップ1回を捨てて3回）")
     f = os.path.join(R, "bench_dtype.csv")
@@ -431,7 +442,7 @@ def sec41_slicing():
 
 
 if __name__ == "__main__":
-    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_beta, sec41_bench, sec42_density, sec5_probe,
+    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_beta, sec41_fix, sec41_bench, sec42_density, sec5_probe,
                sec5_spatial, sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
                sec7_conflict, sec8_tradeoff):
         fn()

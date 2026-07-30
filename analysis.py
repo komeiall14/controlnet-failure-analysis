@@ -153,7 +153,7 @@ def fig4_probe():
     df = load("probe_residual")
     if df is None:
         return print("probe: データ不足")
-    fig, ax = plt.subplots(figsize=(6.4, 4.4))
+    fig, ax = plt.subplots(figsize=(7.2, 3.4))
     m = df[df["source"] != "__empty__"]
     pos = m[m["density"] > 0]
     zero = m[m["density"] <= 0]
@@ -172,7 +172,8 @@ def fig4_probe():
     ax.set_xscale("log")
     ax.set_xlabel("条件地図のエッジ画素率（対数。左端の×は画素率0）")
     ax.set_ylabel("UNet へ注入される残差の RMS")
-    ax.set_title("密度が下がると zero-convolution 経由の\n残差そのものが縮む")
+    ax.set_title("密度が下がると zero-convolution 経由の残差そのものが縮む",
+                 fontsize=12)
     ax.legend(fontsize=9, loc="lower right")
     r = stats.spearmanr(m["density"], m["total_rms"])
     dd = m.drop_duplicates(subset=["source", "total_rms"])
