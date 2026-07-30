@@ -23,7 +23,7 @@ ControlNet が期待どおりに働かなくなる条件を実験的に切り出
 大きさ自体が 3.3 分の 1 に縮む。**制御が消えるのは残差が消えるからではなく、
 条件地図に由来する成分が縮むからである。**
 
-**改善**: (1) 上記 `torch.empty` → `torch.zeros` の 1 行修正。(2) 目標密度への二分探索 + CLAHE、密度連動 scale。生成 1 枚あたりの計算コストは増えない。
+**改善**: (1) 上記 `torch.empty` → `torch.zeros` の修正。20ステップの本番条件で、slicing を有効にしたまま 5 枚すべてが正常に生成され、slicing 無効時との画素差は平均 0.18（0〜255階調）。(2) 目標密度への二分探索 + CLAHE、密度連動 scale。生成 1 枚あたりの計算コストは増えない。
 低コントラスト側で構造整合が改善し（Δ中央値 +0.0665、共通参照）、プロンプト追従は下がらない。
 密度が目標を下回るときだけ適用する形にすると p=0.0019 まで下がる。
 
@@ -34,8 +34,10 @@ ControlNet が期待どおりに働かなくなる条件を実験的に切り出
 
 ```bash
 pip install numpy pandas scipy opencv-python scikit-image
-python3 stats_report.py    # 本文の統計量をすべて再現する
-python3 audit_numbers.py   # 本文の数値が手元のデータから出るか機械的に照合する
+python3 stats_report.py    # 本文が挙げる統計量を節ごとに再現する
+python3 audit_numbers.py   # 本文の数値に出所があるか機械的に照合する
+python3 audit_flow.py      # 本文の論理のつながりを点検する
+python3 audit_consistency.py  # 本文・README・コードの記述が食い違っていないか照合する
 ```
 
 `stats_report.py` は本文の数値の出どころである。節ごとに、その節が主張する統計量を
@@ -72,7 +74,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 推奨しているが、本環境では UNet の順伝播で NaN が発生し、例外を出さないまま黒画像が返る
 （第4.1節）。`diag2.py` で潜在変数の段階の NaN を確認済み。無効にすると同一シードで正常に生成される。
 
-サンプラは DPMSolver++ 2M。UniPC は補正段で `torch.linalg.solve` を呼び、MPS 未実装のため使えない。
+サンプラは DPMSolver++ 2M（UniPC は補正段で `torch.linalg.solve` を呼び、MPS 未実装のため使えない）。
 
 ## ファイル
 
@@ -87,8 +89,12 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `probe_spatial.py` | 残差を「チャネルごとに一様な成分」と「空間的に変化する成分」に分解する |
 | `bench_dtype.py` | fp16 と fp32 の生成時間。ウォームアップ 1 回を捨てて 3 回測る |
 | `exp7_policy.py` | 改善策にプロンプト追従（CLIP）を測り、推奨形（条件付き適用）を評価する |
-| `exp8_slicing_cause.py` | 第4.1節の NaN の原因特定と修正の検証。溢れを否定し、加算元の差し替えで消えることを示す |
-| `diag3_slicing.py` | 同上の探索用。`get_attention_scores` を包んでスコア行列の大きさを記録する |
+| `exp8_slicing_cause.py` | 第4.1節の NaN の原因の切り分け。溢れを否定し、加算元の差し替えで消えることを示す |
+| `exp10_buffer_content.py` | 加算元バッファの中身を直接測る（非有限値の割合と生のビット列） |
+| `exp11_beta_zero.py` | `baddbmm` が beta=0 で加算元を無視するかを MPS / CPU × fp16 / fp32 で調べる。モデルを読まないので数秒 |
+| `exp12_fix_usable.py` | 修正が実用になるかを本番条件（20ステップ）で確認する |
+| `exp9_holdout.py` | 開発に使っていない画像で、改善と適用条件をそのまま試す |
+| `diag3_slicing.py` | 原因探索用。`get_attention_scores` を包んでスコア行列の大きさを記録する |
 | `clip_score.py` | 生成済み画像に CLIP スコアを後付けする（拡散を回さない） |
 | `run_all.sh` | 全実験を無人で順に完走させる |
 
@@ -98,6 +104,8 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 |---|---|
 | `stats_report.py` | **本文に載せた統計量を再現する**。本文の数値の出どころ |
 | `audit_numbers.py` | 本文の数値が手元のデータから出るかを機械的に照合する |
+| `audit_flow.py` | 本文の論理のつながりを点検する（予告の回収・用語の初出・指示語・記号の定義） |
+| `audit_consistency.py` | 提出物どうしの一貫性を点検する（画像数・共通の数値・ファイル一覧・名指し） |
 | `cache_image_metrics.py` | 生成画像から導く測定値を CSV に書き出す（画像を配布せずに検証できるようにするため） |
 | `analysis.py` | 作図。`python3 analysis.py {exp1,exp2,exp3,probe,all}` |
 | `check_health.py` | 全生成画像の健全性を一括検査（黙って壊れていないかの確認） |
@@ -117,7 +125,15 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `results/probe_residual.csv` | 残差の測定（順伝播136回） |
 | `results/probe_spatial.csv` | 残差の空間分解 |
 | `results/exp7_policy.csv` | 改善策の CLIP と共通参照での F1 |
-| `results/exp8_slicing_cause.csv` | NaN の原因特定（精度 × 粒度 × 加算元バッファ） |
+| `results/exp8_slicing_cause.csv` | NaN の原因の切り分け（精度 × 粒度 × 加算元バッファ） |
+| `results/exp10_buffer_content.csv` | 加算元バッファの非有限値の割合とビット列 |
+| `results/exp11_beta_zero.csv` | beta=0 の規約が守られるか（デバイス × 精度 × 充填値） |
+| `results/exp12_fix_usable.csv` | 修正版の生成品質（20ステップ・5画像） |
+| `results/exp9_holdout.csv` | 開発に使っていない画像での改善前後 |
+| `results/bench_dtype.csv` | fp16 / fp32 の生成時間（ウォームアップ込み） |
+| `results/expvar_seed.csv` | 条件内のシード分散（5条件 × 5シード） |
+| `results/exp2_best_scale.csv` | 入力ごとの最良 scale（作図用の中間出力） |
+| `results/smoke.csv` | 疎通確認の 2 枚 |
 | `results/image_metrics.csv` | 生成画像から導いた測定値のキャッシュ |
 
 ## 注意している点

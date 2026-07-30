@@ -246,4 +246,16 @@ def verify(path):
 if __name__ == "__main__":
     p = build()
     print(f"生成: {p}")
-    sys.exit(0 if verify(p) else 1)
+    ok = verify(p)
+    # 提出物は PDF だけではない。コードや README と食い違ったまま
+    # 出さないよう、横断の点検もここで通す。
+    for mod in ("audit_flow", "audit_consistency"):
+        try:
+            m = __import__(mod)
+            if m.main():
+                print(f"  ★{mod} に指摘がある（`python3 {mod}.py` で確認）")
+                ok = False
+        except Exception as e:
+            print(f"  ★{mod} が実行できない: {e}")
+            ok = False
+    sys.exit(0 if ok else 1)
