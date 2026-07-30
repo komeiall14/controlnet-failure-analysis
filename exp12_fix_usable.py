@@ -12,10 +12,12 @@ enable_attention_slicing() はメモリを節約するための設定なので�
   (b) slicing 有効（本体のまま）        … 公式推奨どおり。壊れるはず
   (c) slicing 有効＋加算元を 0 で初期化 … 提案する修正
 
-見るのは 3 点。
+見るのは 2 点。
   1. 生成が成立するか（NaN・単色でないか）
   2. 出力の質が (a) と揃うか（構造整合 edge F1 と、両者の画素差）
-  3. メモリのピークが (a) より下がるか（slicing の本来の目的）
+  ※ メモリは測っていない。torch.mps.driver_allocated_memory() はプロセス全体の
+     確保量（モデルの常駐分）を返すので、生成中の活性化のピークは取れない。
+     3条件とも同じ値になるだけで、slicing の効果の有無を判定できない。
 
 出力: results/exp12_fix_usable.csv
     python3 exp12_fix_usable.py
