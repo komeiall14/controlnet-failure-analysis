@@ -22,6 +22,12 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (Image, PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
+from reportlab.platypus import paraparser
+
+# 下付き・上付きの既定の変位（フォントサイズの 0.5 倍）は本文の行間に対して深く、
+# y_c の c が次行のインクに接近して別グリフのように見えていた。浅くする。
+paraparser.subFraction = 0.22
+paraparser.supFraction = 0.40
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "REPORT.md")
@@ -144,8 +150,9 @@ def build():
                                    ParagraphStyle("eq", parent=NOIND,
                                                   fontSize=9.6, leading=13)))
         else:
-            story.append(Paragraph(inline(s),
-                                   META if "／" in s and len(s) < 90 else BODY))
+            head_block = len(story) < 8 and (
+                "／" in s or s.startswith(("映像メディア学", "研究テーマ", "ソースコード")))
+            story.append(Paragraph(inline(s), META if head_block else BODY))
     flush_table()
 
     doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=15 * mm,

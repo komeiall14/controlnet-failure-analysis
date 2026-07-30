@@ -76,25 +76,54 @@ def sec42_density():
     print(d.groupby(b, observed=True)["f1"]
           .agg(n="size", 平均="mean", 中央値="median", 標準偏差="std").round(4).to_string())
 
-    # 条件が効いていないことの証拠：本来指定したかった輪郭との一致
+    # 条件が効いていないことの証拠：本来指定したかった輪郭との一致。
+    # 生成画像があれば画像から直接計算し、無ければ image_metrics.csv を使う
+    # （画像は 158MB あるためリポジトリに含めていない）。
     tbl = {n: im for n, im, _ in ds.real_images() + ds.synthetic_images()}
-
-    def f1_vs_target(tag, src):
-        g = cv2.imread(os.path.join(R, "images", f"{tag}_gen.png"))
-        return None if g is None else P.edge_f1(P.canny(tbl[src]), g)["f1"]
-
+    have_images = os.path.exists(os.path.join(R, "images", f"{d.iloc[0]['tag']}_gen.png"))
     z = d[d["cond_density"] == 0]
-    zs = [x for x in (f1_vs_target(r.tag, r.source) for r in z.itertuples()) if x is not None]
     ok = d[d["alpha"] == 1.0]
-    os_ = [x for x in (f1_vs_target(r.tag, r.source) for r in ok.itertuples()) if x is not None]
-    floor = []
-    for r in ok.itertuples():
-        g = cv2.imread(os.path.join(R, "images", f"{r.tag}_gen.png"))
-        if g is None:
-            continue
-        for other in tbl:
-            if other != r.source:
-                floor.append(P.edge_f1(P.canny(tbl[other]), g)["f1"])
+
+    if have_images:
+        print("  （出所: 生成画像から直接計算）")
+
+        def f1_vs_target(tag, src):
+            g = cv2.imread(os.path.join(R, "images", f"{tag}_gen.png"))
+            return None if g is None else P.edge_f1(P.canny(tbl[src]), g)["f1"]
+
+        zs = [x for x in (f1_vs_target(r.tag, r.source) for r in z.itertuples()) if x is not None]
+        os_ = [x for x in (f1_vs_target(r.tag, r.source) for r in ok.itertuples()) if x is not None]
+        floor = []
+        for r in ok.itertuples():
+            g = cv2.imread(os.path.join(R, "images", f"{r.tag}_gen.png"))
+            if g is None:
+                continue
+            for other in tbl:
+                if other != r.source:
+                    floor.append(P.edge_f1(P.canny(tbl[other]), g)["f1"])
+        md5s = {}
+        for r in z.itertuples():
+            f = os.path.join(R, "images", f"{r.tag}_gen.png")
+            if os.path.exists(f):
+                md5s[r.tag] = hashlib.md5(open(f, "rb").read()).hexdigest()
+    else:
+        print("  （出所: results/image_metrics.csv。生成画像が無い環境向けのキャッシュ）")
+        im = pd.read_csv(os.path.join(R, "image_metrics.csv"))
+        own = im[im["source"] == im["ref_source"]]
+        zs = own[own["cond_density"] == 0]["f1"].tolist()
+        os_ = own[own["alpha"] == 1.0]["f1"].tolist()
+        floor = im[(im["alpha"] == 1.0) & (im["source"] != im["ref_source"])]["f1"].tolist()
+        md5s = dict(im[im["cond_density"] == 0][["tag", "md5"]].drop_duplicates().values)
+
+    def f1_of(tag):
+        """md5 重複を除くときに使う、タグ→自分の輪郭との F1。"""
+        if have_images:
+            r = d[d["tag"] == tag].iloc[0]
+            g = cv2.imread(os.path.join(R, "images", f"{tag}_gen.png"))
+            return None if g is None else P.edge_f1(P.canny(tbl[r["source"]]), g)["f1"]
+        im = pd.read_csv(os.path.join(R, "image_metrics.csv"))
+        q = im[(im["tag"] == tag) & (im["source"] == im["ref_source"])]
+        return float(q["f1"].iloc[0]) if len(q) else None
     u = stats.mannwhitneyu(zs, floor)
     print(f"\n  本来の輪郭との一致  正しく条件づけ={np.mean(os_):.4f} (n={len(os_)})")
     print(f"                      密度0        ={np.mean(zs):.4f} (n={len(zs)}"
@@ -104,13 +133,9 @@ def sec42_density():
 
     # md5 重複を除いた独立な8枚
     seen = {}
-    for r in z.itertuples():
-        f = os.path.join(R, "images", f"{r.tag}_gen.png")
-        if not os.path.exists(f):
-            continue
-        h = hashlib.md5(open(f, "rb").read()).hexdigest()
+    for tag, h in md5s.items():
         if h not in seen:
-            seen[h] = f1_vs_target(r.tag, r.source)
+            seen[h] = f1_of(tag)
     v = np.array([x for x in seen.values() if x is not None])
     u8 = stats.mannwhitneyu(v, floor)
     print(f"  重複を除いた独立な生成 n={len(v)} 平均={v.mean():.4f} "
@@ -232,7 +257,15 @@ def sec6_common_ref():
             continue
         rows.append(dict(source=r.source, alpha=r.alpha,
                          b=P.edge_f1(ref, gb)["f1"], a=P.edge_f1(ref, ga)["f1"]))
-    c = pd.DataFrame(rows)
+    if rows:
+        print("  （出所: 生成画像から直接計算）")
+        c = pd.DataFrame(rows)
+    else:
+        # 画像が無い環境では exp7_policy.csv の同じ値を使う
+        print("  （出所: results/exp7_policy.csv。生成画像が無い環境向け）")
+        e = load("exp7_policy")
+        c = e.rename(columns={"f1c_before": "b", "f1c_after": "a"})[
+            ["source", "alpha", "b", "a"]]
     for al, g in c.groupby("alpha"):
         p = g.groupby("source").agg(b=("b", "mean"), a=("a", "mean"))
         diff = p["a"] - p["b"]
