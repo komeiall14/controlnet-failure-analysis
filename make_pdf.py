@@ -39,10 +39,10 @@ pdfmetrics.registerFont(TTFont("Mincho", os.path.join(DF, "yumin.ttf")))
 pdfmetrics.registerFont(TTFont("GothicB", os.path.join(DF, "YuGothB.ttc"),
                                subfontIndex=0))
 
-BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.0,
+BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.6,
                       firstLineIndent=9.9, alignment=TA_LEFT,
                       wordWrap="CJK", textColor=colors.black,
-                      spaceAfter=1.2)
+                      spaceAfter=2)
 NOIND = ParagraphStyle("noind", parent=BODY, firstLineIndent=0)
 H1 = ParagraphStyle("h1", fontName="GothicB", fontSize=15, leading=20,
                     spaceBefore=2, spaceAfter=8, textColor=colors.black,
@@ -55,8 +55,7 @@ H3 = ParagraphStyle("h3", fontName="GothicB", fontSize=10.8, leading=15,
                     wordWrap="CJK")
 META = ParagraphStyle("meta", parent=NOIND, fontSize=9.4, leading=13.4)
 # 参考文献は本文より一段小さく組む（学術誌の慣例）
-REF = ParagraphStyle("ref", parent=NOIND, fontSize=8.5, leading=10.6,
-                     spaceAfter=0.5)
+REF = ParagraphStyle("ref", parent=NOIND, fontSize=9.0, leading=12.2)
 CAP = ParagraphStyle("cap", parent=NOIND, fontSize=8.8, leading=12,
                      textColor=colors.black)
 
@@ -140,7 +139,7 @@ def build():
                 iw, ih = PILImage.open(p).size
                 # 縦長の図（散布図）は幅を詰める。横長の並び図は情報密度が高いので
                 # 幅を保つ。どちらも本文幅を超えない範囲に収める。
-                wmm = 130 if iw / ih > 1.5 else 120
+                wmm = 158 if iw / ih > 1.5 else 132
                 w = min(A4[0] - 36 * mm, wmm * mm)
                 story.append(Image(p, width=w, height=w * ih / iw))
                 if m.group(1):
@@ -161,9 +160,9 @@ def build():
                                    META if head_block else REF if in_refs else BODY))
     flush_table()
 
-    doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=15 * mm,
-                            bottomMargin=11 * mm, leftMargin=17 * mm,
-                            rightMargin=17 * mm, title=OUTNAME[:-4])
+    doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=18 * mm,
+                            bottomMargin=17 * mm, leftMargin=19 * mm,
+                            rightMargin=19 * mm, title=OUTNAME[:-4])
     doc.build(story)
     return OUT
 

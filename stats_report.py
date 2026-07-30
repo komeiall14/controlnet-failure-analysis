@@ -344,14 +344,16 @@ def sec6_policy():
 
 
 def sec6_holdout():
-    head("第6節 開発に使っていない8画像での検証（held-out）")
+    head("第6節 開発に使っていない画像での検証（held-out）")
     f = os.path.join(R, "exp9_holdout.csv")
     if not os.path.exists(f):
         return print("  exp9_holdout.csv が無い。`python3 exp9_holdout.py` を実行する")
     c = pd.read_csv(f)
+    # skimage.data.cat は chelsea のエイリアスで開発側と同一画像なので held-out から外す
+    c = c[c["source"] != "cat"]
     done = c.groupby("source").size()
-    if len(c) < 48:
-        print(f"  ※ 実行途中（{len(c)}/96 行、{len(done)} 画像）。以下は暫定値")
+    if len(done) < 7:
+        print(f"  ※ 実行途中（{len(c)} 行、{len(done)} 画像）。以下は暫定値")
     print("  改善と適用条件は real_images 10点＋合成5点から作った。"
           "ここでは規則を一切変えずに当てている。")
     for a, g in c.groupby("alpha"):
@@ -375,6 +377,10 @@ def sec6_holdout():
             w = stats.wilcoxon(pol, bef)
             print(f"  α={a} 推奨形({lab})      適用{int(use.sum())}/{len(p_)}  "
                   f"Δ中央値={np.median(pol - bef):+.4f}  p={w.pvalue:.4f}")
+    dev = {n for n, _, _ in ds.real_images() + ds.synthetic_images()}
+    dup = dev & set(c["source"].unique())
+    print(f"  開発側と重複する画像: {sorted(dup) if dup else 'なし'}"
+          f"（held-out {c['source'].nunique()} 画像）")
     z = c[(c["dens_before"] == 0)]
     if len(z):
         zz = z.groupby("source").agg(cb=("f1c_before", "mean"), ca=("f1c_after", "mean"),

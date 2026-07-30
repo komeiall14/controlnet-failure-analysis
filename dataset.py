@@ -59,6 +59,9 @@ def real_images():
 def holdout_images():
     """検証用に取り分けた skimage.data の同梱画像。
 
+    ★skimage.data.cat は chelsea のエイリアス（同一配列）なので入れない。
+    開発側に chelsea があるため、入れると held-out にならない。
+
     第6節の改善と、その適用条件（密度が目標を下回るときだけ適用する）は
     real_images() の 10 点＋合成 5 点から作った。同じデータで評価すれば
     見積もりは楽観側に寄る。そこで開発に一切使っていない 8 点を別に取り、
@@ -68,7 +71,6 @@ def holdout_images():
     from skimage import data
     items = [
         ("brick", data.brick, "a photo of a brick wall"),
-        ("cat", data.cat, "a photo of a cat lying down"),
         ("clock", data.clock, "a photo of a wall clock"),
         ("grass", data.grass, "a photo of grass"),
         ("gravel", data.gravel, "a photo of gravel"),
