@@ -45,8 +45,31 @@ run exp2b "exp.py exp2b"
 # 追加の失敗条件。既存の重みだけで回るのでディスクを増やさない
 run exp5 "exp.py exp5"    # slicing NaN の発生条件を地図化（軽い。1条件20秒）
 run exp4 "exp.py exp4"    # 条件とプロンプトの意味的衝突（20枚）
-# 一般化の検証。depth条件でも同じ残差の縮小が起きるか（拡散を回さないので数分）
+# 予備測定。depth条件でも同じ残差の縮小が起きるか（拡散を回さないので数分）
 run exp6 "exp.py exp6"
+
+# --- 第4.1節：NaN の原因の切り分けと修正の検証 ---
+# 加算元バッファの中身を直接見る（拡散4ステップ×2精度）
+run buffer "exp10_buffer_content.py"
+# baddbmm が beta=0 で加算元を無視するか。モデルを読まないので数秒
+run beta0 "exp11_beta_zero.py"
+# 修正が本番条件（20ステップ）で実用になるか
+run fixusable "exp12_fix_usable.py"
+# fp16 と fp32 の生成時間。ウォームアップ1回を捨てて3回
+run bench "bench_dtype.py"
+
+# --- 第5節：残差の空間分解 ---
+run spatial "probe_spatial.py"
+
+# --- 第6節：改善の評価 ---
+# 生成済み画像に CLIP を後付けし、推奨形（条件付き適用）を評価する
+run policy "exp7_policy.py"
+# 開発に使っていない画像での検証（最も重い。約6時間）
+run holdout "exp9_holdout.py"
+
+# --- 集計の下ごしらえ ---
+# 生成画像から導く測定値をキャッシュする（画像を配布せずに検証できるように）
+run cache "cache_image_metrics.py"
 
 say "--- 健全性検査 ---"
 python3 check_health.py 2>&1 | tee -a "$L"
