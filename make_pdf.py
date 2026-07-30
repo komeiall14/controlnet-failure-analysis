@@ -184,14 +184,22 @@ def verify(path):
     # ★PDF だけでなく原稿も検査する。REPORT.md は GitHub で公開しているので、
     #   PDF で消えるコメント（<!-- -->）でも読まれてしまう。
     src_all = open(SRC, encoding="utf-8").read()
-    # ※本文で普通に使う語（「書きかけて撤回した」等）を拾わないよう、
-    #   申し送りに固有の言い回しだけを並べる
     for memo in ("判断を仰ぎ", "TODO", "FIXME", "要確認", "後で直す", "★申し送り",
                  "後で書く", "仮置き", "要相談"):
         if memo in txt:
             print(f"  ★提出PDFに申し送りが混入: {memo}"); ok = False
         elif memo in src_all:
             print(f"  ★原稿に申し送りが残っている（公開リポジトリで読める）: {memo}"); ok = False
+    # ★「執筆の経過」を語る言い回しも本文からは落とす。下書きに何を書いて何を消したかは
+    #   提出物の内容ではない。ただし第9節は課題が訂正の申告を求めている場所なので除外する。
+    body = src_all.split("## 9. 生成AI利用")[0]
+    # 「これから何を書くか」の予告も落とす。事実だけを書けばよい。
+    for memo in ("書きかけ", "当初の誤り", "書いていたが", "明示しておきたい",
+                 "撤回した点", "後から気づき",
+                 "しておきたい", "断っておく", "残しておく", "触れておく"):
+        if memo in body:
+            print(f"  ★本文に執筆の経過が残っている（申告は第9節に集約する）: {memo}")
+            ok = False
     if "<!--" in src_all:
         print("  ★原稿に HTML コメントが残っている（公開リポジトリで読める）"); ok = False
     face = pdfmetrics.getFont("Mincho").face
