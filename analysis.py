@@ -177,8 +177,13 @@ def fig4_probe():
     r = stats.spearmanr(m["density"], m["total_rms"])
     dd = m.drop_duplicates(subset=["source", "total_rms"])
     r2 = stats.spearmanr(dd["density"], dd["total_rms"])
-    ax.text(0.03, 0.9, f"Spearman ρ={r.correlation:+.3f}\n重複除去 ρ={r2.correlation:+.3f}",
-            transform=ax.transAxes, fontsize=10,
+    # 本文が機構の根拠に据えているのは密度>0 の領域なので、そちらも併記する
+    nzp = m[m["density"] > 0]
+    r3 = stats.spearmanr(nzp["density"], nzp["total_rms"])
+    ax.text(0.03, 0.87,
+            f"Spearman ρ={r.correlation:+.3f}\n重複除去 ρ={r2.correlation:+.3f}\n"
+            f"密度>0のみ ρ={r3.correlation:+.3f}",
+            transform=ax.transAxes, fontsize=9.5,
             bbox=dict(fc="white", alpha=.85, ec=GRAY))
     fig.tight_layout()
     fig.savefig(os.path.join(FIG, "fig4_residual.png"), bbox_inches="tight")

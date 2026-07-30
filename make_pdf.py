@@ -33,10 +33,10 @@ pdfmetrics.registerFont(TTFont("Mincho", os.path.join(DF, "yumin.ttf")))
 pdfmetrics.registerFont(TTFont("GothicB", os.path.join(DF, "YuGothB.ttc"),
                                subfontIndex=0))
 
-BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.3,
+BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.0,
                       firstLineIndent=9.9, alignment=TA_LEFT,
                       wordWrap="CJK", textColor=colors.black,
-                      spaceAfter=1.5)
+                      spaceAfter=1.2)
 NOIND = ParagraphStyle("noind", parent=BODY, firstLineIndent=0)
 H1 = ParagraphStyle("h1", fontName="GothicB", fontSize=15, leading=20,
                     spaceBefore=2, spaceAfter=8, textColor=colors.black,

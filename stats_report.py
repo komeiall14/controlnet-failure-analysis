@@ -31,10 +31,15 @@ def head(t):
 
 def sec3_env():
     head("第3節 生成速度（20ステップ・512×512）")
+    # ★対象を名指しする。以前は「sec 列を持つ CSV を全部」で集めていたが、
+    #   DDIM 4ステップの exp5・bench_dtype を追加するたびに混入して統計が壊れた
+    #   （2回起きた）。速度の母集団は run_one() が回した 20 ステップの生成だけである。
+    SPEED = ("exp1_density", "exp2_scale", "exp2b_scale_ext",
+             "exp4_conflict", "expvar_seed", "smoke")
     s = []
-    for f in glob.glob(os.path.join(R, "*.csv")):
-        # exp5 は第4.1節の切り分け用で DDIM 4ステップ。条件が違うので混ぜない
-        if os.path.basename(f).startswith("exp5_"):
+    for n in SPEED:
+        f = os.path.join(R, f"{n}.csv")
+        if not os.path.exists(f):
             continue
         d = pd.read_csv(f)
         if "sec" in d.columns:
@@ -42,6 +47,17 @@ def sec3_env():
     s = np.array(s)
     print(f"  n={len(s)}  min={s.min():.1f}  max={s.max():.1f}  "
           f"中央値={np.median(s):.1f}  平均={s.mean():.1f}")
+
+
+def sec41_bench():
+    head("第4.1節 fp16 と fp32 の生成時間（ウォームアップ1回を捨てて3回）")
+    f = os.path.join(R, "bench_dtype.csv")
+    if not os.path.exists(f):
+        return print("  bench_dtype.csv が無い。`python3 bench_dtype.py` を実行する")
+    d = pd.read_csv(f)
+    g = d.groupby("dtype")["sec"].agg(n="size", 中央値="median", 最小="min", 最大="max")
+    print(g.round(2).to_string())
+    print(f"  比 fp32/fp16 = {g.loc['fp32', '中央値'] / g.loc['fp16', '中央値']:.2f}倍")
 
 
 def sec42_density():
@@ -198,6 +214,33 @@ def sec6_improvement():
                   f"p={wq.pvalue:.4f}")
 
 
+def sec6_common_ref():
+    head("第6節 共通の参照地図で測り直した改善前後")
+    print("  exp3 の f1_before/f1_after は、それぞれが与えられた条件地図に対する値である。"
+          "\n  地図の密度が違えば F1 も動く（第4.2節）ので、両者を同じ参照"
+          "（本来指定したかった輪郭）で測り直す。")
+    tbl = {n: im for n, im, _ in ds.real_images() + ds.synthetic_images()}
+    d = load("exp3_improvement")
+    rows = []
+    for r in d.itertuples():
+        ref = P.canny(tbl[r.source])
+        gb = cv2.imread(os.path.join(R, "images",
+                                     f"e3_{r.source}_a{r.alpha}_s{r.seed}_before.png"))
+        ga = cv2.imread(os.path.join(R, "images",
+                                     f"e3_{r.source}_a{r.alpha}_s{r.seed}_after.png"))
+        if gb is None or ga is None:
+            continue
+        rows.append(dict(source=r.source, alpha=r.alpha,
+                         b=P.edge_f1(ref, gb)["f1"], a=P.edge_f1(ref, ga)["f1"]))
+    c = pd.DataFrame(rows)
+    for al, g in c.groupby("alpha"):
+        p = g.groupby("source").agg(b=("b", "mean"), a=("a", "mean"))
+        diff = p["a"] - p["b"]
+        w = stats.wilcoxon(p["a"], p["b"])
+        print(f"  α={al}  n={len(p)}画像  改善={int((diff > 0).sum())}/{len(p)}  "
+              f"Δ中央値={diff.median():+.4f}  Wilcoxon p={w.pvalue:.4f}")
+
+
 def sec7_conflict():
     head("第7節 条件とプロンプトの衝突（予想が外れた検証）")
     d = load("exp4_conflict")
@@ -206,6 +249,14 @@ def sec7_conflict():
     c = d[d["kind"] != "match"].groupby("kind")["f1"].mean()
     print(f"  一致条件の平均={d[d['kind'] == 'match']['f1'].mean():.4f}  "
           f"衝突条件の平均は {c.min():.4f}〜{c.max():.4f} に分布")
+    pv = d.pivot_table(index="source", columns="kind", values="f1")
+    fr = stats.friedmanchisquare(pv["match"], pv["conflict0"],
+                                 pv["conflict1"], pv["conflict2"])
+    print(f"  4条件をまたぐ差 Friedman p={fr.pvalue:.4f}（n={len(pv)}画像）")
+    for k in ("conflict0", "conflict1", "conflict2"):
+        w = stats.wilcoxon(pv["match"], pv[k])
+        print(f"    match vs {k}: Δ中央値={(pv[k] - pv['match']).median():+.4f}"
+              f"  p={w.pvalue:.4f}")
 
 
 def sec8_tradeoff():
@@ -231,8 +282,9 @@ def sec41_slicing():
 
 
 if __name__ == "__main__":
-    for fn in (sec3_env, sec41_slicing, sec42_density, sec5_probe,
-               sec5_spatial, sec6_improvement, sec7_conflict, sec8_tradeoff):
+    for fn in (sec3_env, sec41_slicing, sec41_bench, sec42_density, sec5_probe,
+               sec5_spatial, sec6_improvement, sec6_common_ref,
+               sec7_conflict, sec8_tradeoff):
         fn()
     print("\n" + "=" * 66)
     print("以上がレポート本文に記載した統計量のすべてである。")
