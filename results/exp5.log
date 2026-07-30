@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py", line 214, in <module>
+    exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
+                    ^^^^
+NameError: name 'exp4' is not defined. Did you mean: 'exp1'?

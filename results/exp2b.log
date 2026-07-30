@@ -1,0 +1,39 @@
+Traceback (most recent call last):
+  File "/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py", line 214, in <module>
+    exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
+                    ^^^^
+NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:01<00:05,  1.11s/it]Loading pipeline components...:  50%|█████     | 3/6 [00:01<00:01,  1.82it/s]Loading pipeline components...:  67%|██████▋   | 4/6 [00:08<00:05,  2.61s/it]/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+Loading pipeline components...: 100%|██████████| 6/6 [00:08<00:00,  1.35s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:08<00:00,  1.41s/it]
+  e2_synth_sparse_s1.6: dens=0.0081 f1=0.890
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (1 rows)
+  e2_synth_sparse_s2.0: dens=0.0081 f1=0.908
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (2 rows)
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:00<00:01,  2.83it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:01<00:02,  1.49it/s]Loading pipeline components...:  67%|██████▋   | 4/6 [00:07<00:05,  2.67s/it]/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+Loading pipeline components...:  83%|████████▎ | 5/6 [00:08<00:01,  1.81s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:08<00:00,  1.36s/it]
+  e2_synth_sparse_s1.6: dens=0.0081 f1=0.890
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (1 rows)
+  e2_synth_sparse_s2.0: dens=0.0081 f1=0.908
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (2 rows)
+  e2_synth_sparse_s2.5: dens=0.0081 f1=0.863
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (3 rows)
+  e2_synth_sparse_s3.0: dens=0.0081 f1=0.882
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (4 rows)
+  e2_synth_mid_s1.6: dens=0.0468 f1=0.909
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (5 rows)
+  e2_synth_mid_s2.0: dens=0.0468 f1=0.946
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (6 rows)
+  e2_synth_mid_s2.5: dens=0.0468 f1=0.989
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (7 rows)
+  e2_synth_mid_s3.0: dens=0.0468 f1=0.998
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (8 rows)
+  e2_synth_veryd_s1.6: dens=0.1316 f1=0.981
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (9 rows)
+  e2_synth_veryd_s2.0: dens=0.1316 f1=0.974
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (10 rows)
+  e2_synth_veryd_s2.5: dens=0.1316 f1=0.957
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (11 rows)
+  e2_synth_veryd_s3.0: dens=0.1316 f1=0.948
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (12 rows)

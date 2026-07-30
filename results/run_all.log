@@ -1,0 +1,119 @@
+[07-30 01:15:11] === run_all 開始 ===
+[07-30 01:15:11] exp1 実行中。完了を待機
+[07-30 02:58:56] exp1 終了 (60枚)
+[07-30 02:58:56] --- probe 開始 ---
+[07-30 02:59:19] ★ probe が異常終了 (exit=1)。ログ: results/probe.log
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.11/site-packages/diffusers/pipelines/controlnet/pipeline_controlnet.py", line 286, in _encode_prompt
+    prompt_embeds = torch.cat([prompt_embeds_tuple[1], prompt_embeds_tuple[0]])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: expected Tensor as element 0 in argument 0, but got NoneType
+[07-30 02:59:19] --- expvar 開始 ---
+[07-30 02:59:19] ★ expvar が異常終了 (exit=2)。ログ: results/expvar.log
+python3: can't open file '/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py expvar': [Errno 2] No such file or directory
+[07-30 02:59:19] --- exp2 開始 ---
+[07-30 02:59:19] ★ exp2 が異常終了 (exit=2)。ログ: results/exp2.log
+python3: can't open file '/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py exp2': [Errno 2] No such file or directory
+[07-30 02:59:19] --- exp3 開始 ---
+[07-30 02:59:20] ★ exp3 が異常終了 (exit=2)。ログ: results/exp3.log
+python3: can't open file '/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py exp3': [Errno 2] No such file or directory
+[07-30 02:59:20] --- 健全性検査 ---
+検査 62枚 / 異常 0枚
+[07-30 02:59:21] --- CLIP 付与 ---
+/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+  exp1_density: 60枚に CLIP を付与 (mean=0.2948 min=0.2443 max=0.3342)
+  skip exp2_scale (未生成)
+  skip expvar_seed (未生成)
+[07-30 03:00:31] --- 作図と統計 ---
+  fig1: n=60 ρ=+0.819 p=1.36e-15
+exp2: データ不足
+exp3: データ不足
+probe: データ不足
+run_all.sh: line 49: hon3: command not found
+[07-30 03:01:07] --- CLIP 付与 ---
+/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+  exp1_density: 60枚に CLIP を付与 (mean=0.2948 min=0.2443 max=0.3342)
+  skip exp2_scale (未生成)
+  skip expvar_seed (未生成)
+[07-30 03:01:44] --- 作図と統計 ---
+[07-30 03:02:10] === run_all 開始 ===
+[07-30 03:02:10] --- probe 開始 ---
+  fig1: n=60 ρ=+0.819 p=1.36e-15
+exp2: データ不足
+exp3: データ不足
+probe: データ不足
+[07-30 03:04:25] --- probe 完了 ---
+[07-30 03:04:25] --- expvar 開始 ---
+[07-30 03:49:10] --- expvar 完了 ---
+[07-30 03:49:10] --- exp2 開始 ---
+[07-30 05:04:16] --- exp2 完了 ---
+[07-30 05:04:16] --- exp3 開始 ---
+[07-30 12:07:54] --- exp3 完了 ---
+[07-30 12:07:54] --- exp2b 開始 ---
+[07-30 12:07:59] ★ exp2b が異常終了 (exit=1)。ログ: results/exp2b.log
+Traceback (most recent call last):
+  File "/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py", line 214, in <module>
+    exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
+                    ^^^^
+NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
+[07-30 12:07:59] --- exp5 開始 ---
+[07-30 12:08:01] ★ exp5 が異常終了 (exit=1)。ログ: results/exp5.log
+Traceback (most recent call last):
+  File "/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py", line 214, in <module>
+    exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
+                    ^^^^
+NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
+[07-30 12:08:01] --- exp4 開始 ---
+[07-30 12:08:03] ★ exp4 が異常終了 (exit=1)。ログ: results/exp4.log
+Traceback (most recent call last):
+  File "/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py", line 214, in <module>
+    exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
+                    ^^^^
+NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
+[07-30 12:08:03] --- exp6 開始 ---
+[07-30 12:08:06] ★ exp6 が異常終了 (exit=1)。ログ: results/exp6.log
+Traceback (most recent call last):
+  File "/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py", line 214, in <module>
+    exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
+                    ^^^^
+NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
+[07-30 12:08:06] --- 健全性検査 ---
+検査 309枚 / 異常 0枚
+[07-30 12:08:10] --- CLIP 付与 ---
+/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+  exp1_density: 60枚に CLIP を付与 (mean=0.2948 min=0.2443 max=0.3342)
+  exp2_scale: 42枚に CLIP を付与 (mean=0.2952 min=0.2362 max=0.3293)
+  skip exp2b_scale_ext (未生成)
+  expvar_seed: 25枚に CLIP を付与 (mean=0.2977 min=0.2750 max=0.3237)
+  skip exp4_conflict (未生成)
+[07-30 12:08:53] --- 作図と統計 ---
+/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/analysis.py:95: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r = stats.spearmanr(b["density"], b["best_scale"])
+  fig1: n=60 ρ=+0.819 p=1.36e-15
+  fig2: 密度 vs 最適scale ρ=+nan p=nan
+  fig3: n=90 改善48/90 Δ中央値=+0.0125 Wilcoxon p=0.2181
+        低コントラストのみ: n=45 Δ中央値=+0.1494
+  fig4: n=135 ρ=+0.875 p=1.12e-43
+[07-30 12:09:29] === run_all 完了 ===
+results/exp1_density.csv
+results/exp2_best_scale.csv
+results/exp2_scale.csv
+results/exp3_improvement.csv
+results/expvar_seed.csv
+results/probe_residual.csv
+results/smoke.csv
+[07-30 12:09:57] === run_all 開始 ===
+[07-30 12:09:57] probe は完了済みのためスキップ
+[07-30 12:09:57] expvar は完了済みのためスキップ
+[07-30 12:09:57] exp2 は完了済みのためスキップ
+[07-30 12:09:57] exp3 は完了済みのためスキップ
+[07-30 12:09:57] --- exp2b 開始 ---
+[07-30 12:23:30] === run_all 開始 ===
+[07-30 12:23:30] probe は完了済みのためスキップ
+[07-30 12:23:30] expvar は完了済みのためスキップ
+[07-30 12:23:30] exp2 は完了済みのためスキップ
+[07-30 12:23:30] exp3 は完了済みのためスキップ
+[07-30 12:23:30] --- exp2b 開始 ---

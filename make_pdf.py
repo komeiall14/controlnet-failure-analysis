@@ -1,0 +1,184 @@
+"""REPORT.md から提出用 PDF を作る。
+
+方針はメモリ reference_report_pdf_pipeline に従う。
+- /usr/bin/python3（Apple 製）の reportlab を使う。Homebrew 側には入っていない
+- 本文＝游明朝、見出し＝游ゴシック太字（Word 同梱 DFonts）
+- wordWrap='CJK' ＋ 左揃え。TA_JUSTIFY は日本語で間延びする
+- 文字は全て黒。A4、余白 20mm 前後
+- 生成後に欠字ゼロとページ数を検証する
+
+使い方: /usr/bin/python3 make_pdf.py
+"""
+import os
+import re
+import sys
+
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_LEFT
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import (Image, PageBreak, Paragraph, SimpleDocTemplate,
+                                Spacer, Table, TableStyle)
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+SRC = os.path.join(HERE, "REPORT.md")
+OUTNAME = "48266454_新井滉明_映像メディア学_レポート.pdf"
+OUT = os.path.join(HERE, OUTNAME)
+
+DF = "/Applications/Microsoft Word.app/Contents/Resources/DFonts"
+pdfmetrics.registerFont(TTFont("Mincho", os.path.join(DF, "yumin.ttf")))
+pdfmetrics.registerFont(TTFont("GothicB", os.path.join(DF, "YuGothB.ttc"),
+                               subfontIndex=0))
+
+BODY = ParagraphStyle("body", fontName="Mincho", fontSize=10.3, leading=15,
+                      firstLineIndent=10.3, alignment=TA_LEFT,
+                      wordWrap="CJK", textColor=colors.black,
+                      spaceAfter=2)
+NOIND = ParagraphStyle("noind", parent=BODY, firstLineIndent=0)
+H1 = ParagraphStyle("h1", fontName="GothicB", fontSize=15, leading=20,
+                    spaceBefore=2, spaceAfter=8, textColor=colors.black,
+                    wordWrap="CJK")
+H2 = ParagraphStyle("h2", fontName="GothicB", fontSize=12, leading=17,
+                    spaceBefore=10, spaceAfter=4, textColor=colors.black,
+                    wordWrap="CJK")
+H3 = ParagraphStyle("h3", fontName="GothicB", fontSize=10.8, leading=15,
+                    spaceBefore=7, spaceAfter=3, textColor=colors.black,
+                    wordWrap="CJK")
+META = ParagraphStyle("meta", parent=NOIND, fontSize=9.4, leading=13.4)
+CAP = ParagraphStyle("cap", parent=NOIND, fontSize=8.8, leading=12,
+                     textColor=colors.black)
+
+
+def inline(s):
+    """Markdown の強調とコードを reportlab のタグへ。数式の下付き上付きも変換する。"""
+    s = s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    s = re.sub(r"\*\*(.+?)\*\*", r'<font name="GothicB">\1</font>', s)
+    s = re.sub(r"(?<!\*)\*([^*\n]+?)\*(?!\*)", r"<i>\1</i>", s)   # 斜体（誌名など）
+    s = re.sub(r"`(.+?)`", r"\1", s)
+    s = re.sub(r"_\{(.+?)\}", r"<sub>\1</sub>", s)
+    s = re.sub(r"\^\{(.+?)\}", r"<super>\1</super>", s)
+    # 波括弧なしの下付き・上付き（y_c, Θ_z1, h_1, w_i など）。
+    # 識別子直後の _英数字 を拾う。前後が空白や記号の場合は対象外にして誤変換を防ぐ。
+    s = re.sub(r"(?<=[A-Za-zΘΩα-ω])_([A-Za-z0-9]{1,3})\b", r"<sub>\1</sub>", s)
+    s = re.sub(r"(?<=[A-Za-z0-9)])\^([A-Za-z0-9]{1,3})\b", r"<super>\1</super>", s)
+    s = re.sub(r"\[(.+?)\]\((.+?)\)", r"\1", s)
+    return s
+
+
+def build():
+    lines = open(SRC, encoding="utf-8").read().split("\n")
+    story, tbl = [], []
+
+    def flush_table():
+        if not tbl:
+            return
+        rows = [[Paragraph(inline(c), CAP) for c in r] for r in tbl]
+        w = (A4[0] - 40 * mm) / max(len(rows[0]), 1)
+        t = Table(rows, colWidths=[w] * len(rows[0]))
+        t.setStyle(TableStyle([
+            ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#888888")),
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eeeeee")),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+        ]))
+        story.append(t)
+        story.append(Spacer(1, 5))
+        tbl.clear()
+
+    in_code = False
+    for ln in lines:
+        s = ln.rstrip()
+        if s.startswith("```"):
+            in_code = not in_code
+            continue
+        if s.startswith("<!--"):
+            continue
+        if s.startswith("|"):
+            cells = [c.strip() for c in s.strip("|").split("|")]
+            if all(re.fullmatch(r":?-{2,}:?", c) for c in cells):
+                continue
+            tbl.append(cells)
+            continue
+        flush_table()
+        if not s:
+            continue
+        if s.startswith("---"):
+            continue
+        if in_code:
+            story.append(Paragraph(inline(s).replace(" ", "&nbsp;"),
+                                   ParagraphStyle("code", parent=NOIND,
+                                                  fontSize=8.6, leading=11.6)))
+            continue
+        if s.startswith("### "):
+            story.append(Paragraph(inline(s[4:]), H3))
+        elif s.startswith("## "):
+            story.append(Paragraph(inline(s[3:]), H2))
+        elif s.startswith("# "):
+            story.append(Paragraph(inline(s[2:]), H1))
+        elif s.startswith("!["):
+            m = re.match(r"!\[(.*?)\]\((.+?)\)", s)
+            if m and os.path.exists(os.path.join(HERE, m.group(2))):
+                p = os.path.join(HERE, m.group(2))
+                from PIL import Image as PILImage
+                iw, ih = PILImage.open(p).size
+                w = min(A4[0] - 40 * mm, 165 * mm)
+                story.append(Image(p, width=w, height=w * ih / iw))
+                if m.group(1):
+                    story.append(Paragraph(inline(m.group(1)), CAP))
+                story.append(Spacer(1, 5))
+        elif re.match(r"^[-*] ", s):
+            story.append(Paragraph("・" + inline(s[2:]), NOIND))
+        elif re.match(r"^\d+\. ", s):
+            story.append(Paragraph(inline(s), NOIND))
+        elif s.startswith("    "):
+            story.append(Paragraph(inline(s.strip()),
+                                   ParagraphStyle("eq", parent=NOIND,
+                                                  fontSize=9.6, leading=13)))
+        else:
+            story.append(Paragraph(inline(s),
+                                   META if "／" in s and len(s) < 90 else BODY))
+    flush_table()
+
+    doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=20 * mm,
+                            bottomMargin=18 * mm, leftMargin=20 * mm,
+                            rightMargin=20 * mm, title=OUTNAME[:-4])
+    doc.build(story)
+    return OUT
+
+
+def verify(path):
+    """欠字ゼロ・マークアップ漏れなし・ページ数を確認する。"""
+    import pypdf
+    r = pypdf.PdfReader(path)
+    n = len(r.pages)
+    txt = "\n".join(p.extract_text() or "" for p in r.pages)
+    ok = True
+    print(f"  ページ数: {n}  （設問の上限は4〜8ページ）")
+    if not 4 <= n <= 8:
+        print("  ★ページ数が範囲外"); ok = False
+    for bad in ("<font", "<sub>", "<super>", "<i>", "&amp;", "&lt;", "**", "<!--"):
+        if bad in txt:
+            print(f"  ★マークアップ漏れ: {bad}"); ok = False
+    face = pdfmetrics.getFont("Mincho").face
+    # charToGlyph のキーは文字ではなくコードポイント。文字で引くと必ず None になり
+    # 全文字を欠字と誤判定する（実際に一度やった）。
+    missing = {c for c in txt if ord(c) > 0x2000 and c not in "\n\r\t"
+               and face.charToGlyph.get(ord(c)) is None}
+    if missing:
+        print(f"  ★欠字 {len(missing)}種: {''.join(sorted(missing))[:40]}"); ok = False
+    else:
+        print("  欠字: なし")
+    print(f"  抽出文字数: {len(txt)}")
+    return ok
+
+
+if __name__ == "__main__":
+    p = build()
+    print(f"生成: {p}")
+    sys.exit(0 if verify(p) else 1)

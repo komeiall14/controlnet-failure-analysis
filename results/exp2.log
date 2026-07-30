@@ -1,0 +1,88 @@
+python3: can't open file '/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py exp2': [Errno 2] No such file or directory
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:04<00:24,  4.99s/it]/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+Loading pipeline components...:  50%|█████     | 3/6 [00:05<00:04,  1.35s/it]Loading pipeline components...:  67%|██████▋   | 4/6 [00:05<00:02,  1.10s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.23it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.14s/it]
+  e2_synth_sparse_s0.2: dens=0.0081 f1=0.043
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (1 rows)
+  e2_synth_sparse_s0.4: dens=0.0081 f1=0.248
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (2 rows)
+  e2_synth_sparse_s0.6: dens=0.0081 f1=0.320
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (3 rows)
+  e2_synth_sparse_s0.8: dens=0.0081 f1=0.318
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (4 rows)
+  e2_synth_sparse_s1.0: dens=0.0081 f1=0.333
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (5 rows)
+  e2_synth_sparse_s1.3: dens=0.0081 f1=0.877
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (6 rows)
+  e2_synth_mid_s0.2: dens=0.0468 f1=0.174
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (7 rows)
+  e2_synth_mid_s0.4: dens=0.0468 f1=0.725
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (8 rows)
+  e2_synth_mid_s0.6: dens=0.0468 f1=0.859
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (9 rows)
+  e2_synth_mid_s0.8: dens=0.0468 f1=0.862
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (10 rows)
+  e2_synth_mid_s1.0: dens=0.0468 f1=0.886
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (11 rows)
+  e2_synth_mid_s1.3: dens=0.0468 f1=0.906
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (12 rows)
+  e2_synth_veryd_s0.2: dens=0.1316 f1=0.308
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (13 rows)
+  e2_synth_veryd_s0.4: dens=0.1316 f1=0.278
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (14 rows)
+  e2_synth_veryd_s0.6: dens=0.1316 f1=0.843
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (15 rows)
+  e2_synth_veryd_s0.8: dens=0.1316 f1=0.914
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (16 rows)
+  e2_synth_veryd_s1.0: dens=0.1316 f1=0.957
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (17 rows)
+  e2_synth_veryd_s1.3: dens=0.1316 f1=0.978
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (18 rows)
+  e2_astronaut_s0.2: dens=0.0900 f1=0.508
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (19 rows)
+  e2_astronaut_s0.4: dens=0.0900 f1=0.586
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (20 rows)
+  e2_astronaut_s0.6: dens=0.0900 f1=0.696
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (21 rows)
+  e2_astronaut_s0.8: dens=0.0900 f1=0.734
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (22 rows)
+  e2_astronaut_s1.0: dens=0.0900 f1=0.801
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (23 rows)
+  e2_astronaut_s1.3: dens=0.0900 f1=0.920
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (24 rows)
+  e2_camera_s0.2: dens=0.0751 f1=0.157
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (25 rows)
+  e2_camera_s0.4: dens=0.0751 f1=0.301
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (26 rows)
+  e2_camera_s0.6: dens=0.0751 f1=0.524
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (27 rows)
+  e2_camera_s0.8: dens=0.0751 f1=0.687
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (28 rows)
+  e2_camera_s1.0: dens=0.0751 f1=0.758
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (29 rows)
+  e2_camera_s1.3: dens=0.0751 f1=0.832
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (30 rows)
+  e2_coffee_s0.2: dens=0.0586 f1=0.172
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (31 rows)
+  e2_coffee_s0.4: dens=0.0586 f1=0.313
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (32 rows)
+  e2_coffee_s0.6: dens=0.0586 f1=0.361
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (33 rows)
+  e2_coffee_s0.8: dens=0.0586 f1=0.503
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (34 rows)
+  e2_coffee_s1.0: dens=0.0586 f1=0.657
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (35 rows)
+  e2_coffee_s1.3: dens=0.0586 f1=0.885
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (36 rows)
+  e2_chelsea_s0.2: dens=0.0443 f1=0.396
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (37 rows)
+  e2_chelsea_s0.4: dens=0.0443 f1=0.428
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (38 rows)
+  e2_chelsea_s0.6: dens=0.0443 f1=0.520
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (39 rows)
+  e2_chelsea_s0.8: dens=0.0443 f1=0.596
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (40 rows)
+  e2_chelsea_s1.0: dens=0.0443 f1=0.628
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (41 rows)
+  e2_chelsea_s1.3: dens=0.0443 f1=0.731
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2_scale.csv (42 rows)
