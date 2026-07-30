@@ -1,0 +1,11 @@
+dtype,slicing,buffer,seed,calls,latent_nan,latent_absmax,first_nan_call,q_has_nan,k_has_nan,q_absmax,k_absmax
+fp16,None,empty,0,0,False,3.377,,,,,
+fp32,1,empty,0,2944,False,4.4573,,,,,
+fp16,1,empty,0,2944,True,,640,False,False,7.711,8.602
+fp16,4,empty,0,736,True,,144,False,False,5.473,6.266
+fp16,auto,empty,0,736,True,,144,False,False,5.473,6.266
+fp16,1,zeros,0,2944,False,3.3828,,,,,
+fp16,4,zeros,0,736,False,3.3789,,,,,
+fp16,auto,zeros,0,736,False,3.3789,,,,,
+fp16,1,zeros,1,2944,False,5.0117,,,,,
+fp16,1,zeros,2,2944,False,3.5137,,,,,

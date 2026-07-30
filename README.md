@@ -13,7 +13,7 @@ ControlNet が期待どおりに働かなくなる条件を実験的に切り出
 
 | # | 失敗条件 | 要点 |
 |---|---|---|
-| 1 | 推奨されている省メモリ設定が沈黙したまま出力を壊す | `enable_attention_slicing()` を有効にすると UNet 順伝播で NaN。例外も警告も出ず黒画像が返る。fp16 限定で、分割の粒度には依存しない |
+| 1 | 推奨されている省メモリ設定が沈黙したまま出力を壊す | `enable_attention_slicing()` を有効にすると UNet 順伝播で NaN。例外も警告も出ず黒画像が返る。**原因は `get_attention_scores` が加算元を `torch.empty` で確保している点**（`beta=0` でも IEEE では 0×NaN=NaN）。`torch.zeros` に変えるだけで消える |
 | 2 | 条件地図の密度が下がると制御が消える | 60条件中15条件でエッジ画素率が 0。本来指定したかった輪郭との一致が 0.7329 → 0.2391 へ落ちる。**壊れているのは制御であって生成ではない**（画像自体は普通に出る） |
 | 3 | 推論時の既定値が構造整合に対して弱い | 既定 `controlnet_conditioning_scale=1.0` が最適な入力は 7件中 0件。ただしプロンプト追従と併せると妥当な妥協点 |
 
@@ -23,7 +23,7 @@ ControlNet が期待どおりに働かなくなる条件を実験的に切り出
 大きさ自体が 3.3 分の 1 に縮む。**制御が消えるのは残差が消えるからではなく、
 条件地図に由来する成分が縮むからである。**
 
-**改善**: 目標密度への二分探索 + CLAHE、密度連動 scale。生成 1 枚あたりの計算コストは増えない。
+**改善**: (1) 上記 `torch.empty` → `torch.zeros` の 1 行修正。(2) 目標密度への二分探索 + CLAHE、密度連動 scale。生成 1 枚あたりの計算コストは増えない。
 低コントラスト側で構造整合が改善し（Δ中央値 +0.0665、共通参照）、プロンプト追従は下がらない。
 密度が目標を下回るときだけ適用する形にすると p=0.0019 まで下がる。
 
@@ -87,6 +87,8 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `probe_spatial.py` | 残差を「チャネルごとに一様な成分」と「空間的に変化する成分」に分解する |
 | `bench_dtype.py` | fp16 と fp32 の生成時間。ウォームアップ 1 回を捨てて 3 回測る |
 | `exp7_policy.py` | 改善策にプロンプト追従（CLIP）を測り、推奨形（条件付き適用）を評価する |
+| `exp8_slicing_cause.py` | 第4.1節の NaN の原因特定と修正の検証。溢れを否定し、加算元の差し替えで消えることを示す |
+| `diag3_slicing.py` | 同上の探索用。`get_attention_scores` を包んでスコア行列の大きさを記録する |
 | `clip_score.py` | 生成済み画像に CLIP スコアを後付けする（拡散を回さない） |
 | `run_all.sh` | 全実験を無人で順に完走させる |
 
@@ -115,6 +117,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `results/probe_residual.csv` | 残差の測定（順伝播136回） |
 | `results/probe_spatial.csv` | 残差の空間分解 |
 | `results/exp7_policy.csv` | 改善策の CLIP と共通参照での F1 |
+| `results/exp8_slicing_cause.csv` | NaN の原因特定（精度 × 粒度 × 加算元バッファ） |
 | `results/image_metrics.csv` | 生成画像から導いた測定値のキャッシュ |
 
 ## 注意している点

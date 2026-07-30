@@ -54,6 +54,8 @@ H3 = ParagraphStyle("h3", fontName="GothicB", fontSize=10.8, leading=15,
                     spaceBefore=7, spaceAfter=3, textColor=colors.black,
                     wordWrap="CJK")
 META = ParagraphStyle("meta", parent=NOIND, fontSize=9.4, leading=13.4)
+# 参考文献は本文より一段小さく組む（学術誌の慣例）
+REF = ParagraphStyle("ref", parent=NOIND, fontSize=8.9, leading=11.8)
 CAP = ParagraphStyle("cap", parent=NOIND, fontSize=8.8, leading=12,
                      textColor=colors.black)
 
@@ -98,6 +100,7 @@ def build():
         tbl.clear()
 
     in_code = False
+    in_refs = False
     for ln in lines:
         s = ln.rstrip()
         if s.startswith("```"):
@@ -124,6 +127,7 @@ def build():
         if s.startswith("### "):
             story.append(Paragraph(inline(s[4:]), H3))
         elif s.startswith("## "):
+            in_refs = s.startswith("## 参考文献")
             story.append(Paragraph(inline(s[3:]), H2))
         elif s.startswith("# "):
             story.append(Paragraph(inline(s[2:]), H1))
@@ -152,11 +156,12 @@ def build():
         else:
             head_block = len(story) < 8 and (
                 "／" in s or s.startswith(("映像メディア学", "研究テーマ", "ソースコード")))
-            story.append(Paragraph(inline(s), META if head_block else BODY))
+            story.append(Paragraph(inline(s),
+                                   META if head_block else REF if in_refs else BODY))
     flush_table()
 
     doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=15 * mm,
-                            bottomMargin=12 * mm, leftMargin=17 * mm,
+                            bottomMargin=11 * mm, leftMargin=17 * mm,
                             rightMargin=17 * mm, title=OUTNAME[:-4])
     doc.build(story)
     return OUT
