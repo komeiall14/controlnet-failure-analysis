@@ -127,7 +127,10 @@ def build():
                 p = os.path.join(HERE, m.group(2))
                 from PIL import Image as PILImage
                 iw, ih = PILImage.open(p).size
-                w = min(A4[0] - 36 * mm, 158 * mm)
+                # 縦長の図（散布図）は幅を詰める。横長の並び図は情報密度が高いので
+                # 幅を保つ。どちらも本文幅を超えない範囲に収める。
+                wmm = 158 if iw / ih > 1.5 else 128
+                w = min(A4[0] - 36 * mm, wmm * mm)
                 story.append(Image(p, width=w, height=w * ih / iw))
                 if m.group(1):
                     story.append(Paragraph(inline(m.group(1)), CAP))
@@ -146,7 +149,7 @@ def build():
     flush_table()
 
     doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=15 * mm,
-                            bottomMargin=14 * mm, leftMargin=17 * mm,
+                            bottomMargin=12 * mm, leftMargin=17 * mm,
                             rightMargin=17 * mm, title=OUTNAME[:-4])
     doc.build(story)
     return OUT

@@ -241,6 +241,29 @@ def sec6_common_ref():
               f"Δ中央値={diff.median():+.4f}  Wilcoxon p={w.pvalue:.4f}")
 
 
+def sec6_policy():
+    head("第6節 プロンプト追従と、推奨形（条件付き適用）の評価")
+    f = os.path.join(R, "exp7_policy.csv")
+    if not os.path.exists(f):
+        return print("  exp7_policy.csv が無い。`python3 exp7_policy.py` を実行する")
+    c = pd.read_csv(f)
+    for a, g in c.groupby("alpha"):
+        p = g.groupby("source").agg(db=("dens_before", "first"),
+                                    f1b=("f1_before", "mean"), f1a=("f1_after", "mean"),
+                                    fcb=("f1c_before", "mean"), fca=("f1c_after", "mean"),
+                                    cb=("clip_before", "mean"), ca=("clip_after", "mean"))
+        wc = stats.wilcoxon(p["ca"], p["cb"])
+        print(f"  α={a}  CLIP {p['cb'].mean():.4f}→{p['ca'].mean():.4f}  "
+              f"Δ中央値={(p['ca'] - p['cb']).median():+.4f}  p={wc.pvalue:.4f}")
+        use = p["db"] < 0.045
+        for lab, aft, bef in (("各自の地図", p["f1a"], p["f1b"]),
+                              ("共通参照", p["fca"], p["fcb"])):
+            pol = np.where(use, aft, bef)
+            w = stats.wilcoxon(pol, bef)
+            print(f"      推奨形({lab}) 適用{int(use.sum())}/{len(p)}  "
+                  f"Δ中央値={np.median(pol - bef):+.4f}  p={w.pvalue:.4f}")
+
+
 def sec7_conflict():
     head("第7節 条件とプロンプトの衝突（予想が外れた検証）")
     d = load("exp4_conflict")
@@ -283,7 +306,7 @@ def sec41_slicing():
 
 if __name__ == "__main__":
     for fn in (sec3_env, sec41_slicing, sec41_bench, sec42_density, sec5_probe,
-               sec5_spatial, sec6_improvement, sec6_common_ref,
+               sec5_spatial, sec6_improvement, sec6_common_ref, sec6_policy,
                sec7_conflict, sec8_tradeoff):
         fn()
     print("\n" + "=" * 66)
