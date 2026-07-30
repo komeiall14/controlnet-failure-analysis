@@ -78,6 +78,14 @@ def holdout_images():
         ("retina", data.retina, "a microscope photo of a retina"),
         ("hubble_deep_field", data.hubble_deep_field,
          "a photo of distant galaxies"),
+        # 密度の低い側を厚くするために追加した4点。
+        # colorwheel は両水準で密度0（改善の余地が無い）ので入れない。
+        ("shepp_logan_phantom", data.shepp_logan_phantom,
+         "a medical scan of a head phantom"),
+        ("binary_blobs", data.binary_blobs,
+         "a black and white pattern of blobs"),
+        ("checkerboard", data.checkerboard, "a checkerboard pattern"),
+        ("logo", data.logo, "a logo on a white background"),
     ]
     out = []
     for name, fn, prompt in items:

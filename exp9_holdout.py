@@ -27,8 +27,23 @@ ALPHAS = (0.3, 1.0)
 
 
 def main():
-    rows = []
-    imgs = ds.holdout_images()
+    # 既に測った画像は飛ばして追記する（同じ手順・同じシードなので混ぜてよい）
+    path = os.path.join(P.OUT, "exp9_holdout.csv")
+    rows, done = [], set()
+    if os.path.exists(path):
+        import csv as _csv
+        with open(path, encoding="utf-8") as f:
+            for r in _csv.DictReader(f):
+                if r["source"] == "cat":      # chelsea のエイリアスなので捨てる
+                    continue
+                for k in ("alpha", "seed", "dens_before", "dens_after", "scale_after",
+                          "f1_before", "f1_after", "f1c_before", "f1c_after"):
+                    r[k] = float(r[k])
+                r["seed"] = int(r["seed"])
+                rows.append(r)
+                done.add(r["source"])
+        print(f"  既に測った {len(done)} 画像は飛ばす")
+    imgs = [x for x in ds.holdout_images() if x[0] not in done]
     print(f"  検証用 {len(imgs)} 画像 × {len(ALPHAS)} 水準 × {len(SEEDS)} シード "
           f"× 2 = {len(imgs) * len(ALPHAS) * len(SEEDS) * 2} 枚")
     for name, img, prompt in imgs:
@@ -53,7 +68,6 @@ def main():
                 print(f"  {name} a={a} s{seed}: 共通参照 "
                       f"{r['f1c_before']:.3f} -> {r['f1c_after']:.3f} "
                       f"(scale {sc:.2f}, 密度 {d_base:.4f}->{d_ad:.4f})", flush=True)
-                path = os.path.join(P.OUT, "exp9_holdout.csv")
                 with open(path, "w", newline="", encoding="utf-8") as f:
                     w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
                     w.writeheader()
