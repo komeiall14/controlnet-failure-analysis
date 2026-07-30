@@ -103,7 +103,12 @@ def fig2_scale():
 
 
 def fig3_improvement():
-    """改善前後の対応比較と Wilcoxon 符号順位検定。"""
+    """改善前後の対応比較（参考図）。
+
+    ★注意: ここでプールしている Wilcoxon は、1画像あたり6行を独立扱いするため
+    標本数が水増しされる。レポート第6節の結論はこの検定ではなく、
+    stats_report.py が出す α 層別・画像単位の検定に基づく。この図は分布の概観用。
+    """
     df = load("exp3_improvement")
     if df is None or len(df) < 6:
         return print("exp3: データ不足")
@@ -156,14 +161,10 @@ def fig4_probe():
         ax.scatter([zx] * len(zero), zero["total_rms"], s=34, c=RED,
                    marker="x", zorder=3, label=f"エッジ画素率0 (n={len(zero)})")
         ax.axvline(zx * 1.8, color=GRAY, ls=":", lw=1)
-    e = df[df["source"] == "__empty__"]
-    if len(e):
-        ax.axhline(e["total_rms"].iloc[0], color=RED, ls="--", lw=1.4)
-        # x に密度の最小値（＝0）を渡すと対数軸で図が破綻するので、
-        # 軸座標で置く。
-        ax.text(0.02, e["total_rms"].iloc[0], " 完全に空白のマップでの残差",
-                color=RED, fontsize=9, va="bottom",
-                transform=ax.get_yaxis_transform())
+    # ★空白地図の基準線は描かない。
+    # 密度0の条件地図は全画素0で、参照に使った空白地図とビット単位で同一の入力である。
+    # timestep と潜在変数も固定しているので一致は測定前から確定しており、
+    # 恒等式を経験的な一致として見せることになる（本文第5節で撤回済み）。
     ax.set_xscale("log")
     ax.set_xlabel("条件マップのエッジ画素率（対数。左端の×は画素率0）")
     ax.set_ylabel("UNet へ注入される残差の RMS")

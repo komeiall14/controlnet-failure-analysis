@@ -33,6 +33,7 @@ Stable Diffusion v1.5 ＋ sd-controlnet-canny（fp16）。
 | `dataset.py` | 入力画像。`skimage.data` 同梱＋自作の合成画像のみ（出所は `LICENSE_DATA.md`） |
 | `exp.py` | 各実験。`python3 exp.py {smoke,exp1,expvar,exp2,exp2b,exp3,exp4,exp5,exp6}` |
 | `probe.py` | 機構の測定。ControlNet 単体を1回順伝播させ UNet へ渡される残差の RMS を取る |
+| `stats_report.py` | **レポート本文の統計量をすべて再現する**。本文の数値の出どころはここ |
 | `analysis.py` | 統計処理と作図。`python3 analysis.py {exp1,exp2,exp3,probe,all}` |
 | `clip_score.py` | 生成済み画像に CLIP スコア（プロンプト追従）を後付けする |
 | `check_health.py` | 全生成画像の健全性を一括検査（黙って壊れていないかの確認） |

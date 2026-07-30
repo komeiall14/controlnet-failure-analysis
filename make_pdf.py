@@ -33,8 +33,8 @@ pdfmetrics.registerFont(TTFont("Mincho", os.path.join(DF, "yumin.ttf")))
 pdfmetrics.registerFont(TTFont("GothicB", os.path.join(DF, "YuGothB.ttc"),
                                subfontIndex=0))
 
-BODY = ParagraphStyle("body", fontName="Mincho", fontSize=10.1, leading=14.2,
-                      firstLineIndent=10.1, alignment=TA_LEFT,
+BODY = ParagraphStyle("body", fontName="Mincho", fontSize=9.9, leading=13.6,
+                      firstLineIndent=9.9, alignment=TA_LEFT,
                       wordWrap="CJK", textColor=colors.black,
                       spaceAfter=2)
 NOIND = ParagraphStyle("noind", parent=BODY, firstLineIndent=0)
@@ -84,8 +84,8 @@ def build():
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
             ("LEFTPADDING", (0, 0), (-1, -1), 4),
             ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("TOPPADDING", (0, 0), (-1, -1), 1.8),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 1.8),
         ]))
         story.append(t)
         story.append(Spacer(1, 5))
