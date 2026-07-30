@@ -180,6 +180,20 @@ def verify(path):
     for bad in ("<font", "<sub>", "<super>", "<i>", "&amp;", "&lt;", "**", "<!--"):
         if bad in txt:
             print(f"  ★マークアップ漏れ: {bad}"); ok = False
+    # 申し送りは CHECKLIST.md に書く。提出物へ混入させない。
+    # ★PDF だけでなく原稿も検査する。REPORT.md は GitHub で公開しているので、
+    #   PDF で消えるコメント（<!-- -->）でも読まれてしまう。
+    src_all = open(SRC, encoding="utf-8").read()
+    # ※本文で普通に使う語（「書きかけて撤回した」等）を拾わないよう、
+    #   申し送りに固有の言い回しだけを並べる
+    for memo in ("判断を仰ぎ", "TODO", "FIXME", "要確認", "後で直す", "★申し送り",
+                 "後で書く", "仮置き", "要相談"):
+        if memo in txt:
+            print(f"  ★提出PDFに申し送りが混入: {memo}"); ok = False
+        elif memo in src_all:
+            print(f"  ★原稿に申し送りが残っている（公開リポジトリで読める）: {memo}"); ok = False
+    if "<!--" in src_all:
+        print("  ★原稿に HTML コメントが残っている（公開リポジトリで読める）"); ok = False
     face = pdfmetrics.getFont("Mincho").face
     # charToGlyph のキーは文字ではなくコードポイント。文字で引くと必ず None になり
     # 全文字を欠字と誤判定する（実際に一度やった）。

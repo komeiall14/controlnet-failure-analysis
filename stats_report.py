@@ -49,6 +49,26 @@ def sec3_env():
           f"中央値={np.median(s):.1f}  平均={s.mean():.1f}")
 
 
+def sec41_cause():
+    head("第4.1節 NaN の原因の切り分け（exp8_slicing_cause.py の出力）")
+    f = os.path.join(R, "exp8_slicing_cause.csv")
+    if not os.path.exists(f):
+        return print("  exp8_slicing_cause.csv が無い。`python3 exp8_slicing_cause.py` を実行する")
+    d = pd.read_csv(f)
+    print(d.to_string(index=False))
+    bad = d[d["latent_nan"] & d["first_nan_call"].notna()]
+    if len(bad):
+        print(f"  NaN が出た条件での入力の絶対値の最大 "
+              f"{max(bad['q_absmax'].max(), bad['k_absmax'].max()):.3f}"
+              f"（fp16 の上限 65504）")
+        print(f"  最初に NaN を出した呼び出し（0 起点の添字）"
+              f"{sorted(set(bad['first_nan_call'].astype(int)))}")
+    ok = d[(d["buffer"] == "zeros") & (~d["latent_nan"])]
+    if len(ok):
+        print(f"  加算元を zeros にした {len(ok)} 条件はすべて正常。"
+              f"潜在変数の絶対値の最大 {ok['latent_absmax'].min():.4f}〜{ok['latent_absmax'].max():.4f}")
+
+
 def sec41_bench():
     head("第4.1節 fp16 と fp32 の生成時間（ウォームアップ1回を捨てて3回）")
     f = os.path.join(R, "bench_dtype.csv")
@@ -297,6 +317,47 @@ def sec6_policy():
                   f"Δ中央値={np.median(pol - bef):+.4f}  p={w.pvalue:.4f}")
 
 
+def sec6_holdout():
+    head("第6節 開発に使っていない8画像での検証（held-out）")
+    f = os.path.join(R, "exp9_holdout.csv")
+    if not os.path.exists(f):
+        return print("  exp9_holdout.csv が無い。`python3 exp9_holdout.py` を実行する")
+    c = pd.read_csv(f)
+    done = c.groupby("source").size()
+    if len(c) < 48:
+        print(f"  ※ 実行途中（{len(c)}/96 行、{len(done)} 画像）。以下は暫定値")
+    print("  改善と適用条件は real_images 10点＋合成5点から作った。"
+          "ここでは規則を一切変えずに当てている。")
+    for a, g in c.groupby("alpha"):
+        p_ = g.groupby("source").agg(db=("dens_before", "first"),
+                                     b=("f1_before", "mean"), a_=("f1_after", "mean"),
+                                     cb=("f1c_before", "mean"), ca=("f1c_after", "mean"))
+        if len(p_) < 3:
+            print(f"  α={a}  n={len(p_)}画像（検定には足りない）")
+            continue
+        for lab, aft, bef in (("各自の地図", p_["a_"], p_["b"]),
+                              ("共通参照", p_["ca"], p_["cb"])):
+            d = aft - bef
+            w = stats.wilcoxon(aft, bef)
+            print(f"  α={a} 無条件適用({lab})  n={len(p_)}  "
+                  f"改善={int((d > 0).sum())}/{len(p_)}  Δ中央値={d.median():+.4f}  "
+                  f"p={w.pvalue:.4f}")
+        use = p_["db"] < 0.045
+        for lab, aft, bef in (("各自の地図", p_["a_"], p_["b"]),
+                              ("共通参照", p_["ca"], p_["cb"])):
+            pol = np.where(use, aft, bef)
+            w = stats.wilcoxon(pol, bef)
+            print(f"  α={a} 推奨形({lab})      適用{int(use.sum())}/{len(p_)}  "
+                  f"Δ中央値={np.median(pol - bef):+.4f}  p={w.pvalue:.4f}")
+    z = c[(c["dens_before"] == 0)]
+    if len(z):
+        zz = z.groupby("source").agg(cb=("f1c_before", "mean"), ca=("f1c_after", "mean"),
+                                     da=("dens_after", "first"))
+        print(f"\n  改善前に条件地図が空だった {len(zz)} 画像  "
+              f"共通参照 {zz['cb'].mean():.4f} → {zz['ca'].mean():.4f}  "
+              f"密度 0→{zz['da'].mean():.4f}")
+
+
 def sec7_conflict():
     head("第7節 条件とプロンプトの衝突（予想が外れた検証）")
     d = load("exp4_conflict")
@@ -338,8 +399,8 @@ def sec41_slicing():
 
 
 if __name__ == "__main__":
-    for fn in (sec3_env, sec41_slicing, sec41_bench, sec42_density, sec5_probe,
-               sec5_spatial, sec6_improvement, sec6_common_ref, sec6_policy,
+    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_bench, sec42_density, sec5_probe,
+               sec5_spatial, sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
                sec7_conflict, sec8_tradeoff):
         fn()
     print("\n" + "=" * 66)
