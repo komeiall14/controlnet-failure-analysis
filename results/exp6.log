@@ -3,3 +3,146 @@ Traceback (most recent call last):
     exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
                     ^^^^
 NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:00,  8.72it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:01<00:01,  2.25it/s]Loading pipeline components...:  83%|████████▎ | 5/6 [00:01<00:00,  2.50it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:08<00:00,  2.10s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:08<00:00,  1.44s/it]
+  depth astronaut              a=0.0  std=  0.00 total_rms=0.4592
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (1 rows)
+  depth astronaut              a=0.05 std=  3.79 total_rms=1.7233
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (2 rows)
+  depth astronaut              a=0.1  std=  7.51 total_rms=1.8659
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (3 rows)
+  depth astronaut              a=0.2  std= 15.04 total_rms=1.8730
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (4 rows)
+  depth astronaut              a=0.4  std= 30.06 total_rms=1.8389
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (5 rows)
+  depth astronaut              a=0.7  std= 52.58 total_rms=1.7841
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (6 rows)
+  depth astronaut              a=1.0  std= 75.12 total_rms=1.6942
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (7 rows)
+  depth camera                 a=0.0  std=  0.00 total_rms=0.4767
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (8 rows)
+  depth camera                 a=0.05 std=  3.75 total_rms=1.3822
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (9 rows)
+  depth camera                 a=0.1  std=  7.35 total_rms=1.5163
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (10 rows)
+  depth camera                 a=0.2  std= 14.72 total_rms=1.6057
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (11 rows)
+  depth camera                 a=0.4  std= 29.46 total_rms=1.6806
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (12 rows)
+  depth camera                 a=0.7  std= 51.53 total_rms=1.7066
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (13 rows)
+  depth camera                 a=1.0  std= 73.64 total_rms=1.7162
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (14 rows)
+  depth coffee                 a=0.0  std=  0.00 total_rms=0.4674
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (15 rows)
+  depth coffee                 a=0.05 std=  3.11 total_rms=1.4083
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (16 rows)
+  depth coffee                 a=0.1  std=  6.22 total_rms=1.5363
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (17 rows)
+  depth coffee                 a=0.2  std= 12.38 total_rms=1.6171
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (18 rows)
+  depth coffee                 a=0.4  std= 24.79 total_rms=1.6824
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (19 rows)
+  depth coffee                 a=0.7  std= 43.39 total_rms=1.6777
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (20 rows)
+  depth coffee                 a=1.0  std= 61.98 total_rms=1.6329
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (21 rows)
+  depth chelsea                a=0.0  std=  0.00 total_rms=0.5128
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (22 rows)
+  depth chelsea                a=0.05 std=  1.59 total_rms=1.6571
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (23 rows)
+  depth chelsea                a=0.1  std=  3.12 total_rms=1.6632
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (24 rows)
+  depth chelsea                a=0.2  std=  6.23 total_rms=1.7033
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (25 rows)
+  depth chelsea                a=0.4  std= 12.45 total_rms=1.7431
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (26 rows)
+  depth chelsea                a=0.7  std= 21.79 total_rms=1.6792
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (27 rows)
+  depth chelsea                a=1.0  std= 31.12 total_rms=1.6080
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (28 rows)
+  depth coins                  a=0.0  std=  0.00 total_rms=0.4817
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (29 rows)
+  depth coins                  a=0.05 std=  2.75 total_rms=1.0625
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (30 rows)
+  depth coins                  a=0.1  std=  5.48 total_rms=1.1014
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (31 rows)
+  depth coins                  a=0.2  std= 10.94 total_rms=1.2644
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (32 rows)
+  depth coins                  a=0.4  std= 21.88 total_rms=1.3368
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (33 rows)
+  depth coins                  a=0.7  std= 38.29 total_rms=1.3447
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (34 rows)
+  depth coins                  a=1.0  std= 54.69 total_rms=1.3356
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (35 rows)
+  depth horse                  a=0.0  std=  0.00 total_rms=0.4822
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (36 rows)
+  depth horse                  a=0.05 std=  6.26 total_rms=1.5178
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (37 rows)
+  depth horse                  a=0.1  std= 12.04 total_rms=1.4767
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (38 rows)
+  depth horse                  a=0.2  std= 24.56 total_rms=1.4017
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (39 rows)
+  depth horse                  a=0.4  std= 49.11 total_rms=1.3432
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (40 rows)
+  depth horse                  a=0.7  std= 85.70 total_rms=1.2952
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (41 rows)
+  depth horse                  a=1.0  std=122.77 total_rms=1.2365
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (42 rows)
+  depth page                   a=0.0  std=  0.00 total_rms=0.5010
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (43 rows)
+  depth page                   a=0.05 std=  2.38 total_rms=1.0720
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (44 rows)
+  depth page                   a=0.1  std=  4.72 total_rms=1.1517
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (45 rows)
+  depth page                   a=0.2  std=  9.44 total_rms=1.2654
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (46 rows)
+  depth page                   a=0.4  std= 18.87 total_rms=1.3568
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (47 rows)
+  depth page                   a=0.7  std= 33.02 total_rms=1.3869
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (48 rows)
+  depth page                   a=1.0  std= 47.17 total_rms=1.3926
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (49 rows)
+  depth rocket                 a=0.0  std=  0.00 total_rms=0.4691
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (50 rows)
+  depth rocket                 a=0.05 std=  1.56 total_rms=1.3461
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (51 rows)
+  depth rocket                 a=0.1  std=  3.09 total_rms=1.2514
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (52 rows)
+  depth rocket                 a=0.2  std=  6.15 total_rms=1.0994
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (53 rows)
+  depth rocket                 a=0.4  std= 12.30 total_rms=1.1240
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (54 rows)
+  depth rocket                 a=0.7  std= 21.52 total_rms=1.2573
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (55 rows)
+  depth rocket                 a=1.0  std= 30.74 total_rms=1.3537
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (56 rows)
+  depth immunohistochemistry   a=0.0  std=  0.00 total_rms=0.4850
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (57 rows)
+  depth immunohistochemistry   a=0.05 std=  2.39 total_rms=1.6140
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (58 rows)
+  depth immunohistochemistry   a=0.1  std=  4.75 total_rms=1.7223
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (59 rows)
+  depth immunohistochemistry   a=0.2  std=  9.46 total_rms=1.7615
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (60 rows)
+  depth immunohistochemistry   a=0.4  std= 18.91 total_rms=1.7208
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (61 rows)
+  depth immunohistochemistry   a=0.7  std= 33.11 total_rms=1.6748
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (62 rows)
+  depth immunohistochemistry   a=1.0  std= 47.30 total_rms=1.6457
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (63 rows)
+  depth cell                   a=0.0  std=  0.00 total_rms=0.4869
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (64 rows)
+  depth cell                   a=0.05 std=  1.35 total_rms=0.7303
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (65 rows)
+  depth cell                   a=0.1  std=  2.61 total_rms=0.8589
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (66 rows)
+  depth cell                   a=0.2  std=  5.21 total_rms=1.2581
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (67 rows)
+  depth cell                   a=0.4  std= 10.41 total_rms=1.2838
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (68 rows)
+  depth cell                   a=0.7  std= 18.21 total_rms=1.3418
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (69 rows)
+  depth cell                   a=1.0  std= 26.01 total_rms=1.4003
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp6_depth_generality.csv (70 rows)

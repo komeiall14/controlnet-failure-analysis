@@ -37,3 +37,35 @@ NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
   -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (11 rows)
   e2_synth_veryd_s3.0: dens=0.1316 f1=0.948
   -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (12 rows)
+  e2_astronaut_s1.6: dens=0.0900 f1=0.966
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (13 rows)
+  e2_astronaut_s2.0: dens=0.0900 f1=0.967
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (14 rows)
+  e2_astronaut_s2.5: dens=0.0900 f1=0.965
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (15 rows)
+  e2_astronaut_s3.0: dens=0.0900 f1=0.961
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (16 rows)
+  e2_camera_s1.6: dens=0.0751 f1=0.856
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (17 rows)
+  e2_camera_s2.0: dens=0.0751 f1=0.872
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (18 rows)
+  e2_camera_s2.5: dens=0.0751 f1=0.861
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (19 rows)
+  e2_camera_s3.0: dens=0.0751 f1=0.851
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (20 rows)
+  e2_coffee_s1.6: dens=0.0586 f1=0.950
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (21 rows)
+  e2_coffee_s2.0: dens=0.0586 f1=0.964
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (22 rows)
+  e2_coffee_s2.5: dens=0.0586 f1=0.954
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (23 rows)
+  e2_coffee_s3.0: dens=0.0586 f1=0.946
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (24 rows)
+  e2_chelsea_s1.6: dens=0.0443 f1=0.808
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (25 rows)
+  e2_chelsea_s2.0: dens=0.0443 f1=0.842
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (26 rows)
+  e2_chelsea_s2.5: dens=0.0443 f1=0.848
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (27 rows)
+  e2_chelsea_s3.0: dens=0.0443 f1=0.845
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp2b_scale_ext.csv (28 rows)

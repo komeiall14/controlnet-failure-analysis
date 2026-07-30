@@ -3,3 +3,46 @@ Traceback (most recent call last):
     exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
                     ^^^^
 NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:00<00:01,  2.34it/s]/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  3.31it/s]Loading pipeline components...:  67%|██████▋   | 4/6 [00:01<00:00,  2.54it/s]Loading pipeline components...:  83%|████████▎ | 5/6 [00:06<00:02,  2.08s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.13s/it]
+  e4_astronaut_match: f1=0.801
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (1 rows)
+  e4_astronaut_conflict0: f1=0.880
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (2 rows)
+  e4_astronaut_conflict1: f1=0.811
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (3 rows)
+  e4_astronaut_conflict2: f1=0.866
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (4 rows)
+  e4_camera_match: f1=0.758
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (5 rows)
+  e4_camera_conflict0: f1=0.815
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (6 rows)
+  e4_camera_conflict1: f1=0.714
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (7 rows)
+  e4_camera_conflict2: f1=0.889
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (8 rows)
+  e4_coffee_match: f1=0.657
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (9 rows)
+  e4_coffee_conflict0: f1=0.746
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (10 rows)
+  e4_coffee_conflict1: f1=0.527
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (11 rows)
+  e4_coffee_conflict2: f1=0.668
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (12 rows)
+  e4_chelsea_match: f1=0.628
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (13 rows)
+  e4_chelsea_conflict0: f1=0.529
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (14 rows)
+  e4_chelsea_conflict1: f1=0.538
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (15 rows)
+  e4_chelsea_conflict2: f1=0.603
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (16 rows)
+  e4_coins_match: f1=0.870
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (17 rows)
+  e4_coins_conflict0: f1=0.858
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (18 rows)
+  e4_coins_conflict1: f1=0.563
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (19 rows)
+  e4_coins_conflict2: f1=0.836
+  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp4_conflict.csv (20 rows)

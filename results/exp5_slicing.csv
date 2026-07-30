@@ -1,0 +1,11 @@
+dtype,slicing,nan,absmax,error
+fp16,なし,False,3.376953125,
+fp16,auto,True,nan,
+fp16,max,True,nan,
+fp16,1,True,nan,
+fp16,4,True,nan,
+fp32,なし,False,4.45731782913208,
+fp32,auto,False,4.457320690155029,
+fp32,max,False,4.457311630249023,
+fp32,1,False,4.457311630249023,
+fp32,4,False,4.457320690155029,

@@ -117,3 +117,40 @@ results/smoke.csv
 [07-30 12:23:30] exp2 は完了済みのためスキップ
 [07-30 12:23:30] exp3 は完了済みのためスキップ
 [07-30 12:23:30] --- exp2b 開始 ---
+[07-30 13:11:16] --- exp2b 完了 ---
+[07-30 13:11:16] --- exp5 開始 ---
+[07-30 13:18:28] --- exp5 完了 ---
+[07-30 13:18:28] --- exp4 開始 ---
+[07-30 13:55:37] --- exp4 完了 ---
+[07-30 13:55:37] --- exp6 開始 ---
+[07-30 13:58:31] --- exp6 完了 ---
+[07-30 13:58:31] --- 健全性検査 ---
+検査 357枚 / 異常 0枚
+[07-30 13:58:36] --- CLIP 付与 ---
+/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
+  warnings.warn(
+  exp1_density: 60枚に CLIP を付与 (mean=0.2948 min=0.2443 max=0.3342)
+  exp2_scale: 42枚に CLIP を付与 (mean=0.2952 min=0.2362 max=0.3293)
+  exp2b_scale_ext: 28枚に CLIP を付与 (mean=0.2660 min=0.2020 max=0.3133)
+  expvar_seed: 25枚に CLIP を付与 (mean=0.2977 min=0.2750 max=0.3237)
+  exp4_conflict: 20枚に CLIP を付与 (mean=0.2593 min=0.1940 max=0.3030)
+[07-30 13:59:33] --- 作図と統計 ---
+/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/analysis.py:95: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  r = stats.spearmanr(b["density"], b["best_scale"])
+  fig1: n=60 ρ=+0.819 p=1.36e-15
+  fig2: 密度 vs 最適scale ρ=+nan p=nan
+  fig3: n=90 改善48/90 Δ中央値=+0.0125 Wilcoxon p=0.2181
+        低コントラストのみ: n=45 Δ中央値=+0.1494
+  fig4: n=135 ρ=+0.875 p=1.12e-43
+[07-30 13:59:38] === run_all 完了 ===
+results/exp1_density.csv
+results/exp2_best_scale.csv
+results/exp2_scale.csv
+results/exp2b_scale_ext.csv
+results/exp3_improvement.csv
+results/exp4_conflict.csv
+results/exp5_slicing.csv
+results/exp6_depth_generality.csv
+results/expvar_seed.csv
+results/probe_residual.csv
+results/smoke.csv
