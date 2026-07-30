@@ -8,7 +8,7 @@ say() { echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$L"; }
 
 say "=== run_all 開始 ==="
 
-# 既に走っている exp1 の完了を待つ
+# 既に走っている exp1 の完了を待つ（このスクリプトを二重に起動した場合の保険）
 if pgrep -f "exp.py exp1" > /dev/null; then
   say "exp1 実行中。完了を待機"
   while pgrep -f "exp.py exp1" > /dev/null; do sleep 30; done
@@ -34,6 +34,8 @@ run() {  # run <名前> <引数>
 
 # 機構の直接証拠。数分で終わり最も価値が高いので先に取る
 run probe "probe.py"
+# 第4.2節の中核。15画像×4コントラストの60条件（最も長い。数時間）
+run exp1 "exp.py exp1"
 # 条件内のシード分散。主張が分散に埋もれていないことの担保
 run expvar "exp.py expvar"
 # conditioning_scale の感度
@@ -49,6 +51,8 @@ run exp4 "exp.py exp4"    # 条件とプロンプトの意味的衝突（20枚�
 run exp6 "exp.py exp6"
 
 # --- 第4.1節：NaN の原因の切り分けと修正の検証 ---
+# NaN がどの条件で出るか（精度・粒度・加算元の初期化を振る）
+run slicingcause "exp8_slicing_cause.py"
 # 加算元バッファの中身を直接見る（拡散4ステップ×2精度）
 run buffer "exp10_buffer_content.py"
 # baddbmm が beta=0 で加算元を無視するか。モデルを読まないので数秒

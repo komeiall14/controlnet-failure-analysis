@@ -1,0 +1,6 @@
+source,mean_abs_diff,max_abs_diff
+astronaut,0.1754,20.0
+camera,0.2011,14.0
+chelsea,0.1595,4.0
+coffee,0.129,4.0
+coins,0.2177,19.0

@@ -124,19 +124,39 @@ def main():
     print(d.groupby("cond").agg(壊れた枚数=("broken", "sum"), n=("broken", "size"),
                                 edgeF1平均=("f1", "mean"),
                                 メモリGB=("mem_gb", "max")).round(4).to_string())
-    # 修正版と slicing なしの画素差
-    base = {r["source"]: r for r in rows if r["cond"] == "slicingなし"}
-    fix = [r for r in rows if r["cond"] == "slicingあり修正"]
-    if fix and not any(r["broken"] for r in fix):
-        diffs = []
-        for r in fix:
-            a = cv2.imread(os.path.join(P.OUT, "images", f"e12_slicingなし_{r['source']}.png"))
-            b = cv2.imread(os.path.join(P.OUT, "images", f"e12_slicingあり修正_{r['source']}.png"))
-            if a is not None and b is not None:
-                diffs.append(float(np.abs(a.astype(float) - b.astype(float)).mean()))
-        if diffs:
-            print(f"\n  修正版と slicing なしの画素差（0-255）平均 {np.mean(diffs):.2f}"
-                  f"  最大 {max(diffs):.2f}")
+    pixel_diff([r["source"] for r in rows if r["cond"] == "slicingあり修正"
+                and not r["broken"]])
+
+
+def pixel_diff(sources=None):
+    """修正版と slicing なしの画素差を CSV に残す。
+
+    本文（第4.1節）が「画素差も平均 0.18」と書く根拠がこれである。
+    以前は print で流すだけだったので、GPU の無い環境ではこの1点だけ
+    出所をたどれなかった。保存した画像から計算し直せる形にしてある。
+    """
+    import pandas as pd
+    d = os.path.join(P.OUT, "images")
+    if sources is None:
+        sources = sorted(f[len("e12_slicingなし_"):-4] for f in os.listdir(d)
+                         if f.startswith("e12_slicingなし_"))
+    rows = []
+    for src in sources:
+        a = cv2.imread(os.path.join(d, f"e12_slicingなし_{src}.png"))
+        b = cv2.imread(os.path.join(d, f"e12_slicingあり修正_{src}.png"))
+        if a is None or b is None:
+            continue
+        g = np.abs(a.astype(float) - b.astype(float))
+        rows.append(dict(source=src, mean_abs_diff=round(float(g.mean()), 4),
+                         max_abs_diff=round(float(g.max()), 4)))
+    if not rows:
+        return print("  画素差: 比較できる画像が無い")
+    t = pd.DataFrame(rows)
+    f = os.path.join(P.OUT, "exp12_pixel_diff.csv")
+    t.to_csv(f, index=False)
+    print(f"\n-> {f} ({len(t)} rows)")
+    print(f"  修正版と slicing なしの画素差（0-255）"
+          f"平均 {t['mean_abs_diff'].mean():.2f}  最大 {t['max_abs_diff'].max():.0f}")
 
 
 if __name__ == "__main__":

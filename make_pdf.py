@@ -143,7 +143,9 @@ def build():
                 # 幅を保つ。どちらも本文幅を超えない範囲に収める。
                 # 横長の並び図は情報密度が高いので幅を保つ。
                 # 縦長の散布図は大きくしても情報が増えないので抑える。
-                wmm = 152 if iw / ih > 2.0 else 138
+                # 146mm は図2が第5節の途中のページに収まる上限。これより広いと
+                # KeepTogether の塊が次ページへ送られ、前ページの下端が大きく空く。
+                wmm = 146 if iw / ih > 2.0 else 138
                 w = min(A4[0] - 36 * mm, wmm * mm)
                 # 図とキャプションは離さない。ただし塊にすると前ページに
                 # 収まらないときに丸ごと送られて下端が空くので、
@@ -174,6 +176,25 @@ def build():
                             rightMargin=19 * mm, title=OUTNAME[:-4])
     doc.build(story)
     return OUT
+
+
+def orphan_lines(reader):
+    """句読点だけが行頭へ送られた行を、描画位置から拾う。"""
+    out = []
+    for i, page in enumerate(reader.pages, 1):
+        rows = {}
+
+        def visit(text, cm, tm, font, size, rows=rows):
+            t = text.strip()
+            if t:
+                rows.setdefault(round(tm[5]), []).append(t)
+
+        page.extract_text(visitor_text=visit)
+        for y, parts in rows.items():
+            line = "".join(parts).strip()
+            if line and len(line) <= 2 and all(c in "。、）」・" for c in line):
+                out.append((i, line))
+    return out
 
 
 def verify(path):
@@ -222,6 +243,16 @@ def verify(path):
             ok = False
     if "<!--" in src_all:
         print("  ★原稿に HTML コメントが残っている（公開リポジトリで読める）"); ok = False
+    # 「。」の直後の半角スペース。編集中に付いた空きが PDF では字間の乱れに見える
+    if "。 " in src_all:
+        i = src_all.index("。 ")
+        print(f"  ★「。」の直後に半角スペース: …{src_all[max(0, i - 20):i + 12]}…")
+        ok = False
+    # 行頭に句読点だけが送られる（禁則が効かない）箇所。wordWrap="CJK" は
+    # 行頭禁則を持たないので、折り返しの位置しだいで「。」だけの行ができる。
+    for pg, line in orphan_lines(r):
+        print(f"  ★{pg}ページ目に句読点だけの行: 「{line}」")
+        ok = False
     face = pdfmetrics.getFont("Mincho").face
     # charToGlyph のキーは文字ではなくコードポイント。文字で引くと必ず None になり
     # 全文字を欠字と誤判定する（実際に一度やった）。

@@ -1,54 +1,0 @@
-python3: can't open file '/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py expvar': [Errno 2] No such file or directory
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:02,  2.11it/s]/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
-  warnings.warn(
-Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  5.61it/s]Loading pipeline components...:  67%|██████▋   | 4/6 [00:05<00:03,  1.91s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.24s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.15s/it]
-  ev_cell_s0: dens=0.00165 f1=0.019
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (1 rows)
-  ev_cell_s1: dens=0.00165 f1=0.015
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (2 rows)
-  ev_cell_s2: dens=0.00165 f1=0.013
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (3 rows)
-  ev_cell_s3: dens=0.00165 f1=0.131
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (4 rows)
-  ev_cell_s4: dens=0.00165 f1=0.014
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (5 rows)
-  ev_synth_low_s0: dens=0.02005 f1=0.830
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (6 rows)
-  ev_synth_low_s1: dens=0.02005 f1=0.696
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (7 rows)
-  ev_synth_low_s2: dens=0.02005 f1=0.710
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (8 rows)
-  ev_synth_low_s3: dens=0.02005 f1=0.859
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (9 rows)
-  ev_synth_low_s4: dens=0.02005 f1=0.497
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (10 rows)
-  ev_coffee_s0: dens=0.05859 f1=0.657
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (11 rows)
-  ev_coffee_s1: dens=0.05859 f1=0.736
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (12 rows)
-  ev_coffee_s2: dens=0.05859 f1=0.808
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (13 rows)
-  ev_coffee_s3: dens=0.05859 f1=0.755
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (14 rows)
-  ev_coffee_s4: dens=0.05859 f1=0.747
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (15 rows)
-  ev_synth_dense_s0: dens=0.08838 f1=0.863
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (16 rows)
-  ev_synth_dense_s1: dens=0.08838 f1=0.952
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (17 rows)
-  ev_synth_dense_s2: dens=0.08838 f1=0.946
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (18 rows)
-  ev_synth_dense_s3: dens=0.08838 f1=0.953
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (19 rows)
-  ev_synth_dense_s4: dens=0.08838 f1=0.851
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (20 rows)
-  ev_immunohistochemistry_s0: dens=0.18843 f1=0.850
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (21 rows)
-  ev_immunohistochemistry_s1: dens=0.18843 f1=0.844
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (22 rows)
-  ev_immunohistochemistry_s2: dens=0.18843 f1=0.891
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (23 rows)
-  ev_immunohistochemistry_s3: dens=0.18843 f1=0.885
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (24 rows)
-  ev_immunohistochemistry_s4: dens=0.18843 f1=0.857
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/expvar_seed.csv (25 rows)

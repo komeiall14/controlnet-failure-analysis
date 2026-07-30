@@ -40,15 +40,20 @@ python3 audit_flow.py      # 本文の論理のつながりを点検する
 python3 audit_consistency.py  # 本文・README・コードの記述が食い違っていないか照合する
 ```
 
+この 4 本は torch を必要としない。`pipeline.py` は torch と PIL を生成用の関数の
+中でだけ読むので、条件地図と指標（Canny / edge F1 / Chamfer）は OpenCV と NumPy
+だけで動く。torch 抜きの環境で 4 本とも終了コード 0 になることを確認済み。
+
 `stats_report.py` は本文の数値の出どころである。節ごとに、その節が主張する統計量を
-出力する。生成画像（158MB、リポジトリに含めない）が必要な箇所は
+出力する。ただし末尾の「条件とプロンプトの衝突」だけは本文に採らなかった予備実験で、
+本文に対応する記述は無い（そう表示される）。生成画像（529 枚・163MB、リポジトリに含めない）が必要な箇所は
 `results/image_metrics.csv` に測定値をキャッシュしてあり、画像の有無で
 同じ値になることを確認済み。実行時にどちらから計算したかを表示する。
 
 `audit_numbers.py` は REPORT.md 中の数値を抜き出し、`stats_report.py` の出力か
 `results/*.csv` に一致するかを照合する。どちらにも当たらない数値は「出所不明」として
-一覧に出す。現在、出所不明はすべて非データ数値（学籍番号・DOI・ライブラリのバージョン等）
-のみで、データ由来の数値はゼロである。
+一覧に出す。現在は出所不明ゼロで終了コード 0 になる（学籍番号・DOI・ページ番号・
+ライブラリのバージョンといった非データ数値は、理由を添えた一覧に登録してある）。
 
 ## 実験を最初から回す
 
@@ -57,12 +62,16 @@ pip install torch diffusers transformers accelerate safetensors
 bash run_all.sh
 ```
 
-各段は `results/<名前>.done` を作る。再実行すると完了済みの段はスキップされるので、
-中断しても続きから再開できる。CSV は 1 行ごとに追記するため、途中で落ちても
-そこまでの結果は残る。1 段が異常終了しても後段は続行し、ログに `★` 付きで記録する。
+18 段ある。各段は `results/<名前>.done` を作り、再実行すると完了済みの段は
+スキップされるので、中断しても続きから再開できる。この `.done` と実行ログは
+配布物に含めていないので、clone した直後は全段が対象になる。CSV は 1 行ごとに
+追記するため、途中で落ちてもそこまでの結果は残る。1 段が異常終了しても後段は
+続行し、ログに `★` 付きで記録する。
 
-全段で約 12 時間（Apple M1）。生成は 1 枚あたり 76〜184 秒
-（20ステップ・512×512、n=157、中央値 106.5 秒、平均 110.8 秒）。
+所要時間は、実測できているのが 8 段で計 10.7 時間（最長は `exp3` の 7.1 時間、
+Apple M1）。残る 10 段は生成枚数から見て同程度かかるので、全段を通すと
+1 日前後を見込む。生成は 1 枚あたり 76〜184 秒（20ステップ・512×512、n=157、
+中央値 106.5 秒、平均 110.8 秒）。
 
 ## 実行環境
 
@@ -119,10 +128,10 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `results/exp1_density.csv` | 密度と構造整合（60条件） |
 | `results/exp2_scale.csv` `exp2b_scale_ext.csv` | scale 掃引（7入力 × 10段階） |
 | `results/exp3_improvement.csv` | 改善前後（15画像 × 2水準 × 3シード = 90対） |
-| `results/exp4_conflict.csv` | 条件とプロンプトの衝突（5画像 × 4プロンプト） |
+| `results/exp4_conflict.csv` | 条件とプロンプトの衝突（5画像 × 4プロンプト）。本文には採らなかった予備実験 |
 | `results/exp5_slicing.csv` | attention slicing の NaN 格子（2精度 × 5設定） |
 | `results/exp6_depth_generality.csv` | 深度条件での残差（10画像 × 7水準） |
-| `results/probe_residual.csv` | 残差の測定（順伝播136回） |
+| `results/probe_residual.csv` | 残差の測定（順伝播136回。うち1回は参照用の空白地図で、本文の集計は135回） |
 | `results/probe_spatial.csv` | 残差の空間分解 |
 | `results/exp7_policy.csv` | 改善策の CLIP と共通参照での F1 |
 | `results/exp8_slicing_cause.csv` | NaN の原因の切り分け（精度 × 粒度 × 加算元バッファ） |
@@ -135,6 +144,9 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `results/exp2_best_scale.csv` | 入力ごとの最良 scale（作図用の中間出力） |
 | `results/smoke.csv` | 疎通確認の 2 枚 |
 | `results/image_metrics.csv` | 生成画像から導いた測定値のキャッシュ |
+| `results/exp12_pixel_diff.csv` | 修正版と slicing 無効時の画素差（第4.1節の 0.18 の出所） |
+| `results/figs/*.png` | 作図の出力。本文が貼っているのは `fig1_density.png` と `fig4_residual.png` |
+| `48266454_新井滉明_映像メディア学_レポート.pdf` | 提出したレポート本体 |
 
 ## 注意している点
 

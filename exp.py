@@ -1,11 +1,17 @@
 """ControlNet の失敗条件を実験的に切り出す。
 
-exp1  条件地図の密度と構造整合の関係（固定閾値の縮退）
-exp2  controlnet_conditioning_scale の入力依存感度
-exp3  改善（密度適応 Canny ＋ 密度連動 scale）の前後比較
+smoke   疎通確認（2枚）
+exp1    条件地図の密度と構造整合の関係（固定閾値の縮退。第4.2節）
+expvar  同一条件でのシード分散。主張が分散に埋もれていないことの担保
+exp2    controlnet_conditioning_scale の入力依存感度（第4.3節）
+exp2b   scale の掃引範囲を広げ、共通参照で測り直す（第8節）
+exp3    改善（密度適応 Canny ＋ 密度連動 scale）の前後比較（第6節）
+exp4    条件とプロンプトの衝突。本文には採らなかった予備実験
+exp5    attention slicing と NaN の格子（第4.1節）
+exp6    深度条件でも残差が同じ向きに縮むかの予備測定（第7節）
 
-いずれも同一 seed・同一プロンプトでペアを組み、対応のある比較にする。
-使い方:  python3 exp.py smoke | exp1 | exp2 | exp3
+生成を伴うものは同一 seed・同一プロンプトでペアを組み、対応のある比較にする。
+使い方:  python3 exp.py {smoke,exp1,expvar,exp2,exp2b,exp3,exp4,exp5,exp6}
 """
 import csv
 import json

@@ -1,3 +1,17 @@
 results/images/
 __pycache__/
 *.pyc
+
+# --- 提出物に含めないもの ---
+# 実行の進捗管理と生ログ。開発中に自分が入れた不具合で異常終了した記録
+# （NameError や TypeError のトレースバック）がそのまま残っており、
+# 提出物として配ると壊れているように見える。結果の裏づけは results/*.csv にある。
+results/*.done
+results/*.log
+results/*.pid
+# 執筆中の内輪の作業記録。撤回前の主張や作業メモが並ぶので配らない。
+REVIEW_FINDINGS.md
+REVIEW2_FINDINGS.md
+CHECKLIST.md
+chain2.sh
+results/diag_fp32vae.png

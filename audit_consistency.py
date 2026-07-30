@@ -59,7 +59,10 @@ def check_images():
         bad.append(("開発側の画像数", f"本文 {m.group(1)} 対 実体 {dev}"))
 
     # docstring と LICENSE
-    for f, word in (("dataset.py", "開発に使っていない"),
+    # 照合語は短く取る。「開発に使っていない」で探していたときは、実文の
+    # 「開発に一切使っていない 8 点」に「一切」が挟まって一致せず、
+    # まさにこの検査が動機に挙げている食い違いを素通りさせていた。
+    for f, word in (("dataset.py", "使っていない"),
                     ("exp9_holdout.py", "使っていない"),
                     ("LICENSE_DATA.md", "取り分けた")):
         t = read(f)

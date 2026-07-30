@@ -8,8 +8,12 @@ import time
 
 import cv2
 import numpy as np
-import torch
-from PIL import Image
+
+# torch と PIL は生成にしか要らないので、ここでは読み込まない。
+# canny / edge_density / edge_f1 / chamfer は OpenCV と NumPy だけで完結する。
+# README が案内している「GPU なしで本文の数値を再現する」経路（stats_report.py →
+# import pipeline）は、この2つを先頭で読むと torch 未導入の環境で即座に落ちる。
+# 実際に使う get_pipe / generate / to_cond の中で読む。
 
 MODEL_SD = "stable-diffusion-v1-5/stable-diffusion-v1-5"
 MODEL_CN = "lllyasviel/sd-controlnet-canny"
@@ -21,6 +25,7 @@ _pipe = None
 
 def get_pipe():
     """パイプラインは1度だけ構築する（ロードに40秒前後かかるため）。"""
+    import torch
     global _pipe
     if _pipe is not None:
         return _pipe
@@ -58,6 +63,7 @@ def edge_density(edges):
 
 
 def to_cond(edges):
+    from PIL import Image
     return Image.fromarray(np.stack([edges] * 3, -1))
 
 
@@ -101,6 +107,7 @@ def chamfer(cond_edges, gen_bgr, lo=100, hi=200):
 # ---------------------------------------------------------------- 生成
 
 def generate(prompt, cond_img, seed, scale=1.0, steps=25, negative=None):
+    import torch
     p = get_pipe()
     g = torch.Generator(device="cpu").manual_seed(seed)
     t = time.time()

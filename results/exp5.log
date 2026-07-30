@@ -1,37 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/exp.py", line 214, in <module>
-    exp3=exp3, exp4=exp4, exp5=exp5, exp6=exp6)[sys.argv[1]]()
-                    ^^^^
-NameError: name 'exp4' is not defined. Did you mean: 'exp1'?
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:04,  1.03it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:01<00:02,  1.41it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:09<00:12,  4.18s/it]/opt/anaconda3/lib/python3.11/site-packages/transformers/tokenization_utils_base.py:1601: FutureWarning: `clean_up_tokenization_spaces` was not set. It will be set to `True` by default. This behavior will be depracted in transformers v4.45, and will be then set to `False` by default. For more details check this issue: https://github.com/huggingface/transformers/issues/31884
-  warnings.warn(
-Loading pipeline components...: 100%|██████████| 6/6 [00:10<00:00,  1.46s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:10<00:00,  1.67s/it]
-  fp16 slicing=なし: NaN=False absmax=3.38
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (1 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:02,  1.80it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:01<00:02,  1.95it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:06<00:08,  2.73s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.02s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.14s/it]
-  fp16 slicing=auto: NaN=True absmax=nan
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (2 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:04,  1.22it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:01<00:02,  1.39it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:07<00:09,  3.24s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:07<00:00,  1.13s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:07<00:00,  1.31s/it]
-  fp16 slicing=max: NaN=True absmax=nan
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (3 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:02,  1.82it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:01<00:02,  1.94it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:06<00:08,  2.96s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:07<00:00,  1.03s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:07<00:00,  1.17s/it]
-  fp16 slicing=1: NaN=True absmax=nan
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (4 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:03,  1.35it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:01<00:02,  1.68it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:06<00:08,  2.79s/it]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.03it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:06<00:00,  1.13s/it]
-  fp16 slicing=4: NaN=True absmax=nan
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (5 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:00,  6.59it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  6.42it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 11.30it/s]
-  fp32 slicing=なし: NaN=False absmax=4.46
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (6 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:00,  6.55it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  6.56it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 11.31it/s]
-  fp32 slicing=auto: NaN=False absmax=4.46
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (7 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:00,  6.48it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  6.54it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 11.55it/s]
-  fp32 slicing=max: NaN=False absmax=4.46
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (8 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:00,  6.61it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  6.59it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 11.73it/s]
-  fp32 slicing=1: NaN=False absmax=4.46
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (9 rows)
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  17%|█▋        | 1/6 [00:00<00:01,  3.89it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:00<00:00,  5.87it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  4.12it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00,  7.75it/s]
-  fp32 slicing=4: NaN=False absmax=4.46
-  -> /Users/allcontrol/サイバーセキュリティ/映像メディア学/controlnet_report/results/exp5_slicing.csv (10 rows)

@@ -65,8 +65,16 @@ def sec41_cause():
               f"{sorted(set(bad['first_nan_call'].astype(int)))}")
     ok = d[(d["buffer"] == "zeros") & (~d["latent_nan"])]
     if len(ok):
+        # 本文が挙げる範囲は seed 0 で粒度 1・4・auto を比べたもの。
+        # seed を変えた条件まで混ぜると別の範囲になり、本文と対応しなくなる。
+        s0 = ok[ok["seed"] == 0] if "seed" in ok.columns else ok
         print(f"  加算元を zeros にした {len(ok)} 条件はすべて正常。"
-              f"潜在変数の絶対値の最大 {ok['latent_absmax'].min():.4f}〜{ok['latent_absmax'].max():.4f}")
+              f"seed 0 で粒度を変えた {len(s0)} 条件の潜在変数の絶対値の最大は "
+              f"{s0['latent_absmax'].min():.4f}〜{s0['latent_absmax'].max():.4f}")
+        if len(s0) < len(ok):
+            print(f"  （seed を変えた {len(ok) - len(s0)} 条件も正常。"
+                  f"そちらを含めた範囲は {ok['latent_absmax'].min():.4f}〜"
+                  f"{ok['latent_absmax'].max():.4f}）")
 
 
 def sec41_buffer():
@@ -102,8 +110,12 @@ def sec41_fix():
         return print("  exp12_fix_usable.csv が無い。`python3 exp12_fix_usable.py` を実行する")
     d = pd.read_csv(f)
     print(d.groupby("cond").agg(壊れた枚数=("broken", "sum"), n=("broken", "size"),
-                                edgeF1平均=("f1", "mean"),
-                                メモリGB=("mem_gb", "max")).round(4).to_string())
+                                edgeF1平均=("f1", "mean")).round(4).to_string())
+    g = os.path.join(R, "exp12_pixel_diff.csv")
+    if os.path.exists(g):
+        t = pd.read_csv(g)
+        print(f"  修正版と slicing 無効時の画素差（0〜255、{len(t)}枚）"
+              f"平均 {t['mean_abs_diff'].mean():.2f}  最大 {t['max_abs_diff'].max():.0f}")
 
 
 def sec41_bench():
@@ -363,7 +375,7 @@ def sec6_holdout():
     # skimage.data.cat は chelsea のエイリアスで開発側と同一画像なので held-out から外す
     c = c[c["source"] != "cat"]
     done = c.groupby("source").size()
-    if len(done) < 7:
+    if len(done) < len(ds.holdout_images()):
         print(f"  ※ 実行途中（{len(c)} 行、{len(done)} 画像）。以下は暫定値")
     print("  改善と適用条件は real_images 10点＋合成5点から作った。"
           "ここでは規則を一切変えずに当てている。")
@@ -402,7 +414,7 @@ def sec6_holdout():
 
 
 def sec7_conflict():
-    head("第7節 条件とプロンプトの衝突（予想が外れた検証）")
+    head("（本文には載せていない予備実験）条件とプロンプトの衝突")
     d = load("exp4_conflict")
     g = d.groupby("kind")["f1"].agg(n="size", 平均="mean", 中央値="median").round(4)
     print(g.to_string())
@@ -442,9 +454,12 @@ def sec41_slicing():
 
 
 if __name__ == "__main__":
-    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_beta, sec41_fix, sec41_bench, sec42_density, sec5_probe,
-               sec5_spatial, sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
-               sec7_conflict, sec8_tradeoff):
+    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_beta,
+               sec41_fix, sec41_bench, sec42_density, sec5_probe, sec5_spatial,
+               sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
+               sec8_tradeoff):
         fn()
     print("\n" + "=" * 66)
     print("以上がレポート本文に記載した統計量のすべてである。")
+    print("以下は本文に採らなかった予備実験で、本文に対応する記述は無い。")
+    sec7_conflict()
