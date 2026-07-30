@@ -1,3 +1,9 @@
+"""黒画像の原因の初期切り分け（第4.1節に至る前の一回きりの診断）。
+
+fp32 の VAE を使えば直るかを試したもので、結果は「直らない」。
+原因の特定は exp8_slicing_cause.py 以降で行った。
+実験の連鎖（run_all.sh）には含めていない。
+"""
 import torch, numpy as np, cv2, time
 from PIL import Image
 from diffusers import ControlNetModel, StableDiffusionControlNetPipeline, DPMSolverMultistepScheduler
