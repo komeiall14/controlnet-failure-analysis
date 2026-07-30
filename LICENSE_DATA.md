@@ -6,20 +6,26 @@
 
 scikit-image (BSD-3-Clause) に同梱され、再配布が許諾されている画像。
 本リポジトリには画像そのものを含めず、`dataset.py` が実行時に `skimage.data` から読み込む。
-下表の後半 8 点は `holdout_images()` として取り分けたもので、改善とその適用条件を
-作るのには一切使わず、第 6 節の検証だけに用いている。
+このうち `holdout_images()` として取り分けた 11 点は、改善とその適用条件を作るのには
+使わず、第 6 節の検証だけに用いている（`skimage.data.cat` は `chelsea` のエイリアスで
+同一画像なので held-out に入れていない）。
+
+**本レポートの図1に写っているのは camera（CC0）とその生成結果である。**
+バージョンは実験に用いた scikit-image 0.22.0 に準拠する。
 
 | 識別子 | 出所 |
 |---|---|
-| astronaut | NASA 提供のパブリックドメイン画像（Eileen Collins） |
-| camera | 古典的なテスト画像（cameraman） |
-| coffee, chelsea, rocket | scikit-image が CC0 相当で同梱 |
-| coins, page, horse | scikit-image 同梱のテスト画像 |
-| immunohistochemistry, cell | scikit-image 同梱の顕微鏡画像 |
-| brick, grass, gravel | scikit-image 同梱のテクスチャ画像 |
-| cat, clock, moon | scikit-image 同梱のテスト画像 |
-| retina | scikit-image 同梱の眼底画像 |
-| hubble_deep_field | NASA/STScI 提供のパブリックドメイン画像 |
+| camera | **CC0**（撮影者 Lav Varshney）。scikit-image 0.18 で、著作権上の懸念があった従来の cameraman から差し替えられたもの（[issue #3927](https://github.com/scikit-image/scikit-image/issues/3927)）。**本レポートの図1はこの画像を使っている** |
+| coffee, chelsea | No copyright restrictions（scikit-image の記載） |
+| rocket | public domain |
+| astronaut, hubble_deep_field | NASA 提供のパブリックドメイン |
+| cell, retina, grass | CC0 |
+| brick, gravel | CC0Textures |
+| clock | public domain（撮影者 Stefan van der Walt） |
+| coins | Brooklyn Museum Collection、既知の著作権制限なし |
+| immunohistochemistry | scikit-image 同梱の顕微鏡画像 |
+| shepp_logan_phantom, binary_blobs, checkerboard, logo | scikit-image が生成する合成画像 |
+| moon, page, horse | scikit-image 同梱のテスト画像 |
 
 各画像の詳細な帰属は scikit-image の公式ドキュメント
 <https://scikit-image.org/docs/stable/api/skimage.data.html> に従う。
