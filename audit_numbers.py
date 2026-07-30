@@ -18,6 +18,7 @@ import re
 import subprocess
 import sys
 
+import numpy as np
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -96,6 +97,8 @@ def known_values():
         d = pd.read_csv(f)
         for c in d.columns:
             s = pd.to_numeric(d[c], errors="coerce").dropna()
+            # exp11 の fill 列など inf/nan を含む列があるので落とす
+            s = s[np.isfinite(s)]
             for v in s:
                 for nd in (0, 1, 2, 3, 4):
                     vals.add(f"{round(float(v), nd):.{nd}f}" if nd else str(int(round(v))))

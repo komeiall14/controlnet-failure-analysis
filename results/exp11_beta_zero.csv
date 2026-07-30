@@ -1,0 +1,17 @@
+dtype,device,fill,out_has_nan,matches_zeros,honors_beta0
+float16,mps,nan,True,False,False
+float16,mps,inf,True,False,False
+float16,mps,-inf,True,False,False
+float16,mps,10000.0,False,True,True
+float16,cpu,nan,False,True,True
+float16,cpu,inf,False,True,True
+float16,cpu,-inf,False,True,True
+float16,cpu,10000.0,False,True,True
+float32,mps,nan,True,False,False
+float32,mps,inf,True,False,False
+float32,mps,-inf,True,False,False
+float32,mps,10000.0,False,True,True
+float32,cpu,nan,False,True,True
+float32,cpu,inf,False,True,True
+float32,cpu,-inf,False,True,True
+float32,cpu,10000.0,False,True,True

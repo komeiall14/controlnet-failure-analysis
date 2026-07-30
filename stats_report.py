@@ -84,6 +84,17 @@ def sec41_buffer():
               f"最初に出力が NaN になった呼び出し {r.first_nan_out_call}")
 
 
+def sec41_beta():
+    head("第4.1節 baddbmm が beta=0 で加算元を無視するか（exp11_beta_zero.py）")
+    f = os.path.join(R, "exp11_beta_zero.csv")
+    if not os.path.exists(f):
+        return print("  exp11_beta_zero.csv が無い。`python3 exp11_beta_zero.py` を実行する")
+    d = pd.read_csv(f)
+    print(d.to_string(index=False))
+    for dev, g in d.groupby("device"):
+        print(f"  {dev}: 規約どおり {int(g['honors_beta0'].sum())}/{len(g)} 条件")
+
+
 def sec41_bench():
     head("第4.1節 fp16 と fp32 の生成時間（ウォームアップ1回を捨てて3回）")
     f = os.path.join(R, "bench_dtype.csv")
@@ -414,7 +425,7 @@ def sec41_slicing():
 
 
 if __name__ == "__main__":
-    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_bench, sec42_density, sec5_probe,
+    for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_beta, sec41_bench, sec42_density, sec5_probe,
                sec5_spatial, sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
                sec7_conflict, sec8_tradeoff):
         fn()

@@ -55,7 +55,8 @@ H3 = ParagraphStyle("h3", fontName="GothicB", fontSize=10.8, leading=15,
                     wordWrap="CJK")
 META = ParagraphStyle("meta", parent=NOIND, fontSize=9.4, leading=13.4)
 # 参考文献は本文より一段小さく組む（学術誌の慣例）
-REF = ParagraphStyle("ref", parent=NOIND, fontSize=8.6, leading=11.2)
+REF = ParagraphStyle("ref", parent=NOIND, fontSize=8.5, leading=10.6,
+                     spaceAfter=0.5)
 CAP = ParagraphStyle("cap", parent=NOIND, fontSize=8.8, leading=12,
                      textColor=colors.black)
 
@@ -139,7 +140,7 @@ def build():
                 iw, ih = PILImage.open(p).size
                 # 縦長の図（散布図）は幅を詰める。横長の並び図は情報密度が高いので
                 # 幅を保つ。どちらも本文幅を超えない範囲に収める。
-                wmm = 142 if iw / ih > 1.5 else 128
+                wmm = 130 if iw / ih > 1.5 else 120
                 w = min(A4[0] - 36 * mm, wmm * mm)
                 story.append(Image(p, width=w, height=w * ih / iw))
                 if m.group(1):
