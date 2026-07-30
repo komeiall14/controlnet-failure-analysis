@@ -56,6 +56,42 @@ def real_images():
     return out
 
 
+def holdout_images():
+    """検証用に取り分けた skimage.data の同梱画像。
+
+    第6節の改善と、その適用条件（密度が目標を下回るときだけ適用する）は
+    real_images() の 10 点＋合成 5 点から作った。同じデータで評価すれば
+    見積もりは楽観側に寄る。そこで開発に一切使っていない 8 点を別に取り、
+    規則をそのまま適用して再現するかを見る。
+    密度は α=1.0 で 0.0005〜0.3130 と、開発側（0.0016〜0.1884）より広い。
+    """
+    from skimage import data
+    items = [
+        ("brick", data.brick, "a photo of a brick wall"),
+        ("cat", data.cat, "a photo of a cat lying down"),
+        ("clock", data.clock, "a photo of a wall clock"),
+        ("grass", data.grass, "a photo of grass"),
+        ("gravel", data.gravel, "a photo of gravel"),
+        ("moon", data.moon, "a photo of the moon"),
+        ("retina", data.retina, "a microscope photo of a retina"),
+        ("hubble_deep_field", data.hubble_deep_field,
+         "a photo of distant galaxies"),
+    ]
+    out = []
+    for name, fn, prompt in items:
+        try:
+            arr = np.asarray(fn())
+            if arr.dtype == bool:
+                arr = (arr * 255).astype(np.uint8)
+            elif arr.dtype != np.uint8:
+                arr = cv2.normalize(arr.astype(np.float32), None, 0, 255,
+                                    cv2.NORM_MINMAX).astype(np.uint8)
+            out.append((name, _fit(arr), prompt))
+        except Exception as e:
+            print(f"  skip {name}: {e}")
+    return out
+
+
 def synthetic_images():
     """エッジ密度を段階的に変えた合成画像。密度が唯一の変化要因になるよう
     物体の意味内容（円と矩形）は揃え、反復の細かさだけを変える。"""

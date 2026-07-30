@@ -6,6 +6,8 @@
 
 scikit-image (BSD-3-Clause) に同梱され、再配布が許諾されている画像。
 本リポジトリには画像そのものを含めず、`dataset.py` が実行時に `skimage.data` から読み込む。
+下表の後半 8 点は `holdout_images()` として取り分けたもので、改善とその適用条件を
+作るのには一切使わず、第 6 節の検証だけに用いている。
 
 | 識別子 | 出所 |
 |---|---|
@@ -14,6 +16,10 @@ scikit-image (BSD-3-Clause) に同梱され、再配布が許諾されている�
 | coffee, chelsea, rocket | scikit-image が CC0 相当で同梱 |
 | coins, page, horse | scikit-image 同梱のテスト画像 |
 | immunohistochemistry, cell | scikit-image 同梱の顕微鏡画像 |
+| brick, grass, gravel | scikit-image 同梱のテクスチャ画像 |
+| cat, clock, moon | scikit-image 同梱のテスト画像 |
+| retina | scikit-image 同梱の眼底画像 |
+| hubble_deep_field | NASA/STScI 提供のパブリックドメイン画像 |
 
 各画像の詳細な帰属は scikit-image の公式ドキュメント
 <https://scikit-image.org/docs/stable/api/skimage.data.html> に従う。
