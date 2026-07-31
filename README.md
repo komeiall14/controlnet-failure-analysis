@@ -114,12 +114,12 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `stats_report.py` | 本文に載せた統計量を再現する。本文の数値の出どころ |
 | `audit_numbers.py` | 本文の数値が手元のデータから出るかを機械的に照合する |
 | `audit_flow.py` | 本文の論理のつながりを点検する（予告の回収・用語の初出・指示語・記号の定義） |
-| `audit_consistency.py` | 提出物どうしの一貫性を点検する（画像数・共通の数値・ファイル一覧・名指し・利用ログと第9節） |
+| `audit_consistency.py` | 提出物どうしの一貫性を点検する（画像数・共通の数値・ファイル一覧・名指し） |
 | `cache_image_metrics.py` | 生成画像から導く測定値を CSV に書き出す（画像を配布せずに検証できるようにするため） |
 | `analysis.py` | 作図。`python3 analysis.py {exp1,exp2,exp3,probe,all}` |
 | `check_health.py` | 全生成画像の健全性を一括検査（黙って壊れていないかの確認） |
 | `diag.py` `diag2.py` | 黒画像の原因切り分け。潜在変数の NaN と attention slicing の関与を特定 |
-| `make_pdf.py` | 提出用 PDF（レポートと生成AI利用ログ）の生成と検証 |
+| `make_pdf.py` | 提出用 PDF の生成と検証（欠字・申し送り・句読点だけの行・ページ数） |
 
 ### 主な出力
 
@@ -146,8 +146,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `results/image_metrics.csv` | 生成画像から導いた測定値のキャッシュ |
 | `results/exp12_pixel_diff.csv` | 修正版と slicing 無効時の画素差（第4.1節の 0.18 の出所） |
 | `results/figs/*.png` | 作図の出力。本文が貼っているのは `fig1_density.png` と `fig4_residual.png` |
-| `48266454_新井滉明_映像メディア学_レポート.pdf` | 提出物1。レポート本体（8ページ） |
-| `AI_USAGE_LOG.md` → `48266454_新井滉明_映像メディア学_生成AI利用ログ.pdf` | 提出物3。生成AI利用ログ（1ページ） |
+| `48266454_新井滉明_映像メディア学_レポート.pdf` | 提出したレポート本体（8ページ）。生成AI利用ログは第9節にある |
 
 ## 注意している点
 

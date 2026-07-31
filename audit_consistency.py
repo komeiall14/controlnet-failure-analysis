@@ -11,7 +11,6 @@
   B 共通の数値 README と REPORT.md の両方に出る数値が一致するか
   C ファイル   README が挙げるものが実在し、実在するものが漏れていないか
   D 名指し     本文が名前を挙げたスクリプト・CSV が実在するか
-  E 利用ログ   提出物3（AI_USAGE_LOG.md）と本文第9節が食い違っていないか
 
     python3 audit_consistency.py
 """
@@ -115,41 +114,6 @@ def check_named():
     return bad
 
 
-def check_ai_log():
-    """E: 提出物3と本文第9節の整合。
-
-    同じ申告を二か所に書くので、片方だけ直すと食い違う。第9節が挙げる
-    固有名・訂正の要点が、利用ログ側にも同じ形で出ているかを見る。
-    """
-    log = read("AI_USAGE_LOG.md")
-    rep = read("REPORT.md")
-    if not log:
-        return [("AI_USAGE_LOG.md が無い", "提出物3が作れない")]
-    sec9 = rep.split("## 9. 生成AI利用")[-1].split("## 参考文献")[0]
-    bad = []
-    # ログは簡易版なので、第9節より短いのは当然である。見るのは向きだけで、
-    # ログにあって第9節に無い主張（＝片方だけ直したときの食い違い）を落とす。
-    #
-    # 固定した語のリストで照合すると、語を差し替えられたときに素通りする。
-    # そこでログ側から固有名（ラテン文字語）と数を機械的に抜き、
-    # 一つずつ第9節にあるかを見る。日本語だけで書かれた主張は拾えないので、
-    # そこは目視に残る。
-    # 氏名・学籍番号などの見出し部は申告の中身ではないので対象から外す
-    body = log.split("## 使用した生成AI")[-1]
-    STOP = {"AI", "PDF", "GitHub", "URL"}
-    for w in set(re.findall(r"[A-Za-z][A-Za-z0-9_.]{2,}", body)) | set(
-            re.findall(r"\d{3,}", body)):
-        if w in STOP:
-            continue
-        if w not in sec9:
-            bad.append((w, "利用ログにしか無い"))
-    # 設問が求める3項目
-    for need in ("使用した生成AI", "主な用途", "自分で修正・判断した箇所"):
-        if need not in log:
-            bad.append((need, "利用ログに項目が無い"))
-    return bad
-
-
 def main():
     n = 0
     print("A 画像数の一致")
@@ -180,12 +144,6 @@ def main():
     if not check_named():
         print("  （すべて実在）")
 
-    print("E 提出物3（生成AI利用ログ）と第9節")
-    for w, where in check_ai_log():
-        print(f"  ★ 『{w}』が {where}")
-        n += 1
-    if not check_ai_log():
-        print("  （食い違いなし）")
 
     print(f"\n食い違い {n} 件")
     return 1 if n else 0
