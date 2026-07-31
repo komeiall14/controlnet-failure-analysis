@@ -46,7 +46,7 @@ ControlNet は学習済み拡散モデルの重みを凍結したまま、その
 |---|---|
 | 計算機 | Apple M1（8コアGPU）／RAM 16GB／macOS 14.4.1 |
 | バックエンド | PyTorch 2.2.2 の MPS（CUDA なし） |
-| ライブラリ | diffusers 0.31.0／transformers 4.44.2／OpenCV 4.11.0／SciPy 1.16.0 |
+| ライブラリ | diffusers 0.31.0／transformers 4.44.2／OpenCV 4.11.0／SciPy 1.16.0／scikit-image 0.22.0（入力画像の出所） |
 | モデル | Stable Diffusion v1.5 ＋ sd-controlnet-canny（fp16、計 1.43×10⁹ パラメータ） |
 | サンプラ | DPMSolver++ 2M（Karras）20ステップ、512×512 |
 | 生成速度 | 1枚あたり 76〜184秒（n = 157、中央値 106.5秒）。第4.1節の切り分けは DDIM 4ステップなので別条件である |

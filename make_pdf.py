@@ -87,7 +87,9 @@ def build(src=None, out=None):
             return
         rows = [[Paragraph(inline(c), CAP) for c in r] for r in tbl]
         w = (A4[0] - 40 * mm) / max(len(rows[0]), 1)
-        t = Table(rows, colWidths=[w] * len(rows[0]))
+        # 表がページをまたぐと、次のページには見出し行が無いまま数値だけが並ぶ。
+        # 見出しを繰り返す。
+        t = Table(rows, colWidths=[w] * len(rows[0]), repeatRows=1)
         t.setStyle(TableStyle([
             ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#888888")),
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#eeeeee")),
