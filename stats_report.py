@@ -489,6 +489,22 @@ def sec7_conflict():
               f"  p={w.pvalue:.4f}")
 
 
+def sec8_amplify():
+    head("第8節 空の条件地図で scale を上げても指定が戻らないか")
+    f = os.path.join(R, "exp14_amplify_empty.csv")
+    if not os.path.exists(f):
+        return print("  exp14_amplify_empty.csv が無い。"
+                     "`python3 exp14_amplify_empty.py` を実行する")
+    d = pd.read_csv(f)
+    for (src, a_), g in d.groupby(["source", "alpha"]):
+        g = g.sort_values("scale")
+        v = g["f1_vs_intended"].values
+        lab = "空の地図" if g["cond_density"].iloc[0] == 0 else "条件地図あり"
+        print(f"  {src:8s} α={a_:<5}（{lab}） scale {g['scale'].min()}→"
+              f"{g['scale'].max()}  本来の輪郭との F1 {v[0]:.4f}→{v[-1]:.4f}"
+              f"  幅 {v.max() - v.min():.4f}")
+
+
 def sec8_tradeoff():
     head("第8節 構造整合とプロンプト追従のトレードオフ")
     d = pd.concat([load("exp2_scale"), load("exp2b_scale_ext")],
@@ -542,7 +558,7 @@ if __name__ == "__main__":
     for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_beta,
                sec41_fix, sec41_mem, sec41_bench, sec42_density, sec5_probe, sec5_spatial,
                sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
-               sec8_tradeoff):
+               sec8_amplify, sec8_tradeoff):
         fn()
     print("\n" + "=" * 66)
     print("以上がレポート本文に記載した統計量のすべてである。")
