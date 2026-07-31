@@ -76,7 +76,6 @@ def run(label, slicing, patch, targets):
     try:
         for name, img, prompt, cond in targets:
             torch.mps.empty_cache()
-            base = torch.mps.driver_allocated_memory()
             g = torch.Generator(device="cpu").manual_seed(SEED)
             out = p(prompt, image=P.to_cond(cond), num_inference_steps=STEPS,
                     generator=g).images[0]

@@ -16,7 +16,6 @@ import csv
 import os
 
 import cv2
-import numpy as np
 
 import dataset as ds
 import exp as E

@@ -19,7 +19,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import (Image, PageBreak, Paragraph, SimpleDocTemplate,
+from reportlab.platypus import (Image, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 from reportlab.platypus import paraparser
 

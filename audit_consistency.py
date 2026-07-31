@@ -49,7 +49,7 @@ def check_images():
     # 本文が held-out について述べる画像数
     m = re.search(r"使っていない[^。]{0,20}?(\d+)\s*画像", rep)
     if m and int(m.group(1)) != hold:
-        bad.append((f"held-out の画像数", f"本文 {m.group(1)} 対 実体 {hold}"))
+        bad.append((r"held-out の画像数", f"本文 {m.group(1)} 対 実体 {hold}"))
     # 開発側
     m = re.search(r"(\d+)\s*画像 × コントラスト", rep)
     if m and int(m.group(1)) != dev - 0:

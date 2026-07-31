@@ -17,7 +17,6 @@ Attention.get_attention_scores（torch.baddbmm でスコア行列を明示的に
 
     python3 diag3_slicing.py
 """
-import os
 
 import torch
 from diffusers import (ControlNetModel, DDIMScheduler,

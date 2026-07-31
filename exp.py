@@ -14,7 +14,6 @@ exp6    深度条件でも残差が同じ向きに縮むかの予備測定（第
 使い方:  python3 exp.py {smoke,exp1,expvar,exp2,exp2b,exp3,exp4,exp5,exp6}
 """
 import csv
-import json
 import os
 import sys
 import time

@@ -4,8 +4,8 @@
 exp12 の slicingあり（修正なし）は、第4.1節が壊れることを示すために
 わざと壊れた状態で保存してあるので、退化していることを期待する側で数える。
 """
-import glob, os, re, sys
-import cv2, numpy as np
+import glob, os, sys
+import cv2
 R = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
 bad, expected_broken = [], []
 files = sorted(f for f in glob.glob(os.path.join(R, "images", "*.png"))

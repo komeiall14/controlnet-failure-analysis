@@ -7,7 +7,6 @@
 拡散は回さないので1枚あたり数十msで済む。
 """
 import csv
-import glob
 import os
 import sys
 

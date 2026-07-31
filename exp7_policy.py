@@ -14,7 +14,6 @@
 出力: results/exp7_policy.csv
     python3 exp7_policy.py
 """
-import csv
 import os
 
 import cv2

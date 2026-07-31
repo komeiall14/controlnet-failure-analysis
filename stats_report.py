@@ -6,7 +6,6 @@ analysis.py は図を描くためのもので、fig1 と fig3 には本文が採
 
     python3 stats_report.py
 """
-import glob
 import hashlib
 import os
 

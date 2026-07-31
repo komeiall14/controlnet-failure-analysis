@@ -5,7 +5,6 @@ fp32 の VAE を使えば直るかを試したもので、結果は「直らな�
 実験の連鎖（run_all.sh）には含めていない。
 """
 import torch, numpy as np, cv2, time
-from PIL import Image
 from diffusers import ControlNetModel, StableDiffusionControlNetPipeline, DPMSolverMultistepScheduler
 import dataset as ds, pipeline as P
 
