@@ -182,22 +182,34 @@ def build(src=None, out=None):
     return out
 
 
-def orphan_lines(reader):
-    """句読点だけが行頭へ送られた行を、描画位置から拾う。"""
+def orphan_lines(path, tol=5.0):
+    """句読点だけが行頭へ送られた行を、実際の描画位置から拾う。
+
+    pypdf の visitor が渡す tm[5] は段落ごとに戻るので、それで行をまとめると
+    別の段落の断片が同じ行に見える。文字の実座標（charbox）で高さの近いものを
+    まとめる。同じ行でもベースラインが数値で1〜4pt ずれるので許容を入れる。
+    """
+    import pypdfium2 as pdfium
     out = []
-    for i, page in enumerate(reader.pages, 1):
-        rows = {}
-
-        def visit(text, cm, tm, font, size, rows=rows):
-            t = text.strip()
-            if t:
-                rows.setdefault(round(tm[5]), []).append(t)
-
-        page.extract_text(visitor_text=visit)
-        for y, parts in rows.items():
-            line = "".join(parts).strip()
-            if line and len(line) <= 2 and all(c in "。、）」・" for c in line):
-                out.append((i, line))
+    doc = pdfium.PdfDocument(path)
+    for i in range(len(doc)):
+        tp = doc[i].get_textpage()
+        items = []
+        for c in range(tp.count_chars()):
+            ch = tp.get_text_range(c, 1)
+            if ch.strip():
+                items.append((tp.get_charbox(c)[1], ch))
+        items.sort(key=lambda x: x[0])
+        cur, line = None, []
+        for y, ch in items + [(float("inf"), "")]:
+            if cur is None or abs(y - cur) <= tol:
+                cur = y if cur is None else cur
+                line.append(ch)
+            else:
+                t = "".join(line).strip()
+                if t and len(t) <= 2 and all(c in "。、）」・．，" for c in t):
+                    out.append((i + 1, t))
+                cur, line = y, [ch]
     return out
 
 
@@ -275,7 +287,7 @@ def verify(path):
         ok = False
     # 行頭に句読点だけが送られる（禁則が効かない）箇所。wordWrap="CJK" は
     # 行頭禁則を持たないので、折り返しの位置しだいで「。」だけの行ができる。
-    for pg, line in orphan_lines(r):
+    for pg, line in orphan_lines(path):
         print(f"  ★{pg}ページ目に句読点だけの行: 「{line}」")
         ok = False
     face = pdfmetrics.getFont("Mincho").face
