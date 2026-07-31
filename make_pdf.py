@@ -33,6 +33,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "REPORT.md")
 OUTNAME = "48266454_新井滉明_映像メディア学_レポート.pdf"
 OUT = os.path.join(HERE, OUTNAME)
+# 提出物3（生成AI利用ログ）。設問が別項目として挙げているので独立した1枚にする
+LOG_SRC = os.path.join(HERE, "AI_USAGE_LOG.md")
+LOG_OUT = os.path.join(HERE, "48266454_新井滉明_映像メディア学_生成AI利用ログ.pdf")
 
 DF = "/Applications/Microsoft Word.app/Contents/Resources/DFonts"
 pdfmetrics.registerFont(TTFont("Mincho", os.path.join(DF, "yumin.ttf")))
@@ -78,8 +81,9 @@ def inline(s):
     return s
 
 
-def build():
-    lines = open(SRC, encoding="utf-8").read().split("\n")
+def build(src=None, out=None):
+    src, out = src or SRC, out or OUT
+    lines = open(src, encoding="utf-8").read().split("\n")
     story, tbl = [], []
 
     def flush_table():
@@ -171,11 +175,11 @@ def build():
                                    META if head_block else REF if in_refs else BODY))
     flush_table()
 
-    doc = SimpleDocTemplate(OUT, pagesize=A4, topMargin=18 * mm,
+    doc = SimpleDocTemplate(out, pagesize=A4, topMargin=18 * mm,
                             bottomMargin=17 * mm, leftMargin=19 * mm,
                             rightMargin=19 * mm, title=OUTNAME[:-4])
     doc.build(story)
-    return OUT
+    return out
 
 
 def orphan_lines(reader):
@@ -295,10 +299,35 @@ def verify(path):
     return ok
 
 
+def verify_log(path):
+    """提出物3（生成AI利用ログ）を検める。設問が求める3項目と欠字を見る。"""
+    import pypdf
+    src = open(LOG_SRC, encoding="utf-8").read()
+    txt = "\n".join(p.extract_text() or "" for p in pypdf.PdfReader(path).pages)
+    ok = True
+    for need in ("使用した生成AI", "主な用途", "自分で修正・判断した箇所"):
+        if need not in txt:
+            print(f"  ★設問が求める項目が無い: {need}"); ok = False
+    for bad in ("<font", "<sub>", "<super>", "**", "<!--", "TODO", "FIXME", "要確認"):
+        if bad in txt or bad in src:
+            print(f"  ★マークアップ漏れ／申し送り: {bad}"); ok = False
+    face = pdfmetrics.getFont("Mincho").face
+    missing = {c for c in src if ord(c) > 0x2000 and c not in "\n\r\t"
+               and face.charToGlyph.get(ord(c)) is None}
+    if missing:
+        print(f"  ★欠字 {len(missing)}種: {''.join(sorted(missing))}"); ok = False
+    else:
+        print("  欠字: なし")
+    return ok
+
+
 if __name__ == "__main__":
     p = build()
     print(f"生成: {p}")
     ok = verify(p)
+    q = build(LOG_SRC, LOG_OUT)
+    print(f"生成: {q}（提出物3）")
+    ok = verify_log(q) and ok
     # 提出物は PDF だけではない。コードや README と食い違ったまま
     # 出さないよう、横断の点検もここで通す。
     for mod in ("audit_flow", "audit_consistency"):

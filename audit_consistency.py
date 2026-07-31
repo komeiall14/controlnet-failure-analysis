@@ -11,6 +11,7 @@
   B 共通の数値 README と REPORT.md の両方に出る数値が一致するか
   C ファイル   README が挙げるものが実在し、実在するものが漏れていないか
   D 名指し     本文が名前を挙げたスクリプト・CSV が実在するか
+  E 利用ログ   提出物3（AI_USAGE_LOG.md）と本文第9節が食い違っていないか
 
     python3 audit_consistency.py
 """
@@ -114,6 +115,30 @@ def check_named():
     return bad
 
 
+def check_ai_log():
+    """E: 提出物3と本文第9節の整合。
+
+    同じ申告を二か所に書くので、片方だけ直すと食い違う。第9節が挙げる
+    固有名・訂正の要点が、利用ログ側にも同じ形で出ているかを見る。
+    """
+    log = read("AI_USAGE_LOG.md")
+    rep = read("REPORT.md")
+    if not log:
+        return [("AI_USAGE_LOG.md が無い", "提出物3が作れない")]
+    sec9 = rep.split("## 9. 生成AI利用")[-1].split("## 参考文献")[0]
+    bad = []
+    for w in ("Claude", "CVPR 2023", "ICCV 2023", "guess_mode",
+              "stats_report.py", "audit_numbers.py", "標本数の水増し"):
+        if (w in log) != (w in sec9):
+            where = "利用ログのみ" if w in log else "第9節のみ"
+            bad.append((w, where))
+    # 設問が求める3項目
+    for need in ("使用した生成AI", "主な用途", "自分で修正・判断した箇所"):
+        if need not in log:
+            bad.append((need, "利用ログに項目が無い"))
+    return bad
+
+
 def main():
     n = 0
     print("A 画像数の一致")
@@ -143,6 +168,13 @@ def main():
         n += 1
     if not check_named():
         print("  （すべて実在）")
+
+    print("E 提出物3（生成AI利用ログ）と第9節")
+    for w, where in check_ai_log():
+        print(f"  ★ 『{w}』が {where}")
+        n += 1
+    if not check_ai_log():
+        print("  （食い違いなし）")
 
     print(f"\n食い違い {n} 件")
     return 1 if n else 0
