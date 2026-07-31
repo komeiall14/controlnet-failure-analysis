@@ -94,13 +94,17 @@ def fig2_scale():
     ax[1].set_xscale("log")
     ax[1].set_xlabel("条件地図のエッジ画素率（対数）")
     ax[1].set_ylabel("F1 を最大化する scale")
-    ax[1].set_title("密度と scale は同じ資源の\n二つの支払い方になっている")
+    ax[1].set_title("最良の scale は全入力で掃引範囲の上限\n（密度との対応は現れない）")
     if len(b) > 2:
-        r = stats.spearmanr(b["density"], b["best_scale"])
-        ax[1].text(0.03, 0.9, f"Spearman ρ={r.correlation:+.3f}",
-                   transform=ax[1].transAxes, fontsize=10,
-                   bbox=dict(fc="white", alpha=.8, ec=GRAY))
-        print(f"  fig2: 密度 vs 最適scale ρ={r.correlation:+.3f} p={r.pvalue:.3g}")
+        if b["best_scale"].nunique() < 2:
+            note = f"最良の scale が全 {len(b)} 入力で同一（{b['best_scale'].iloc[0]:g}）\nため順位相関は定義できない"
+            print(f"  fig2: 最良 scale が全件 {b['best_scale'].iloc[0]:g} で順位相関は定義できない")
+        else:
+            r = stats.spearmanr(b["density"], b["best_scale"])
+            note = f"Spearman ρ={r.correlation:+.3f}"
+            print(f"  fig2: 密度 vs 最適scale ρ={r.correlation:+.3f} p={r.pvalue:.3g}")
+        ax[1].text(0.03, 0.9, note, transform=ax[1].transAxes, fontsize=9,
+                   va="top", bbox=dict(fc="white", alpha=.8, ec=GRAY))
     fig.tight_layout()
     fig.savefig(os.path.join(FIG, "fig2_scale.png"), bbox_inches="tight")
     b.to_csv(os.path.join(OUT, "exp2_best_scale.csv"), index=False)
