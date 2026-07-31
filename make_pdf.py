@@ -210,9 +210,8 @@ def verify(path):
     for bad in ("<font", "<sub>", "<super>", "<i>", "&amp;", "&lt;", "**", "<!--"):
         if bad in txt:
             print(f"  ★マークアップ漏れ: {bad}"); ok = False
-    # 申し送りは CHECKLIST.md に書く。提出物へ混入させない。
-    # ★PDF だけでなく原稿も検査する。REPORT.md は GitHub で公開しているので、
-    #   PDF で消えるコメント（<!-- -->）でも読まれてしまう。
+    # 作業中の申し送りを提出物へ混入させない。PDF だけでなく原稿も検査する。
+    # REPORT.md は公開しているので、PDF に現れない箇所（HTML コメント等）も読める。
     src_all = open(SRC, encoding="utf-8").read()
     for memo in ("判断を仰ぎ", "TODO", "FIXME", "要確認", "後で直す", "★申し送り",
                  "後で書く", "仮置き", "要相談"):
@@ -220,11 +219,10 @@ def verify(path):
             print(f"  ★提出PDFに申し送りが混入: {memo}"); ok = False
         elif memo in src_all:
             print(f"  ★原稿に申し送りが残っている（公開リポジトリで読める）: {memo}"); ok = False
-    # ★「執筆の経過」を語る言い回しも本文からは落とす。下書きに何を書いて何を消したかは
-    #   提出物の内容ではない。ただし第9節は課題が訂正の申告を求めている場所なので除外する。
-    # ★本文で「測った」と書いたものを、Limitations で「測っていない」と書く
-    #   食い違いが3回起きた（溢れの特定／バッファの中身／原因の帰属）。
-    #   節をまたいで矛盾しやすい語の組を突き合わせる。
+    # 「執筆の経過」を語る言い回しも本文からは落とす。下書きに何を書いて何を消したかは
+    # 提出物の内容ではない。ただし第9節は課題が訂正の申告を求める場所なので除外する。
+    # あわせて、本文で「測った」と書いたものを Limitations で「測っていない」と
+    # 書く型の食い違いを、節をまたいで矛盾しやすい語の組で突き合わせる。
     sec4 = src_all.split("### 4.1")[-1].split("### 4.2")[0] if "### 4.1" in src_all else ""
     sec7 = src_all.split("## 7. Limitations")[-1].split("## 8.")[0] if "## 7. Limitations" in src_all else ""
     for got, notyet in (("中身も直接測った", "中身そのものは観測していない"),
@@ -244,6 +242,29 @@ def verify(path):
     if "<!--" in src_all:
         print("  ★原稿に HTML コメントが残っている（公開リポジトリで読める）"); ok = False
     # 「。」の直後の半角スペース。編集中に付いた空きが PDF では字間の乱れに見える
+    # 執筆の経過は本文だけでなくコード側にも残る。提出するのはリポジトリ全体なので、
+    # 実際に配布されるファイル（git の管理下にあるもの）を一括で見る。
+    # REPORT.md は上で個別に見ており、第9節は訂正の申告を求められている場所なので除く。
+    # make_pdf.py 自身は下の検出語そのものを持つので除く。
+    import subprocess
+    try:
+        tracked = subprocess.run(["git", "ls-files"], cwd=HERE, check=True,
+                                 capture_output=True, text=True).stdout.split("\n")
+    except Exception:
+        tracked = []
+    for rel in tracked:
+        if (not rel.endswith((".py", ".sh", ".md"))
+                or os.path.basename(rel) in ("REPORT.md", "make_pdf.py")):
+            continue
+        f = os.path.join(HERE, rel)
+        if not os.path.exists(f):
+            continue
+        t = open(f, encoding="utf-8").read()
+        for memo in ("書きかけ", "実際にやった", "実際に一度", "やらかし",
+                     "TODO", "FIXME", "要相談", "判断を仰ぎ"):
+            if memo in t:
+                print(f"  ★{rel} に作業中の書き込み: {memo}"); ok = False
+
     if "。 " in src_all:
         i = src_all.index("。 ")
         print(f"  ★「。」の直後に半角スペース: …{src_all[max(0, i - 20):i + 12]}…")
@@ -254,13 +275,13 @@ def verify(path):
         print(f"  ★{pg}ページ目に句読点だけの行: 「{line}」")
         ok = False
     face = pdfmetrics.getFont("Mincho").face
-    # charToGlyph のキーは文字ではなくコードポイント。文字で引くと必ず None になり
-    # 全文字を欠字と誤判定する（実際に一度やった）。
+    # charToGlyph のキーは文字ではなくコードポイント。文字で引くと必ず None を
+    # 返すので、全文字を欠字と誤判定する。
     #
-    # ★抽出後のテキストで欠字を探してはいけない。グリフが無い文字は抽出時点で
-    # すでに NUL に化けており、ord > 0x2000 の条件に掛からず永久に検出できない。
-    # 実際 3.4×10⁻⁵ の上付きマイナス(U+207B)がこの穴をすり抜け、PDF 上では
-    # 3.4×10□⁵ と、指数の符号が消えた形で出ていた。原稿側を検査する。
+    # 欠字は抽出後のテキストからは探せない。グリフの無い文字は抽出の時点で
+    # すでに NUL に化けており、ord > 0x2000 の条件に掛からないためである。
+    # 上付きマイナス(U+207B)がこの穴をすり抜け、3.4×10⁻⁵ が PDF 上では
+    # 3.4×10□⁵ と指数の符号を落とした形で出ていた。原稿側を検査する。
     src = open(SRC, encoding="utf-8").read()
     missing = {c for c in src if ord(c) > 0x2000 and c not in "\n\r\t"
                and face.charToGlyph.get(ord(c)) is None}

@@ -31,9 +31,9 @@ def head(t):
 
 def sec3_env():
     head("第3節 生成速度（20ステップ・512×512）")
-    # ★対象を名指しする。以前は「sec 列を持つ CSV を全部」で集めていたが、
-    #   DDIM 4ステップの exp5・bench_dtype を追加するたびに混入して統計が壊れた
-    #   （2回起きた）。速度の母集団は run_one() が回した 20 ステップの生成だけである。
+    # 対象は名指しで指定する。「sec 列を持つ CSV を全部」のような集め方だと、
+    # DDIM 4 ステップで測る exp5・bench_dtype が混ざって別条件の値が入る。
+    # 速度の母集団は run_one() が回した 20 ステップの生成だけである。
     SPEED = ("exp1_density", "exp2_scale", "exp2b_scale_ext",
              "exp4_conflict", "expvar_seed", "smoke")
     s = []

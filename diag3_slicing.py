@@ -1,8 +1,7 @@
 """第4.1節の NaN が計算のどこで生まれるかを特定する。
 
-これまで分かっていたのは「fp16 かつ attention slicing のときだけ壊れる」
-「分割の粒度に依存しない」という入出力レベルの事実までで、
-なぜ壊れるのかは特定できていなかった。
+入出力を観察して言えるのは「fp16 かつ attention slicing のときだけ壊れる」
+「分割の粒度に依存しない」までである。なぜ壊れるのかはそこからは決まらない。
 
 slicing を有効にすると attention の実装が SDPA から
 Attention.get_attention_scores（torch.baddbmm でスコア行列を明示的に構成する経路）

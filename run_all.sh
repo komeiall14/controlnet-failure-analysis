@@ -20,7 +20,7 @@ run() {  # run <名前> <引数>
   if [ -f "results/${name}.done" ]; then say "$name は完了済みのためスキップ"; return; fi
   say "--- $name 開始 ---"
   # $arg は "exp.py expvar" のように引数を含むので、あえてクォートしない。
-  # クォートすると全体が1つのファイル名として解釈され即死する（実際にやった）。
+  # クォートすると全体が1つのファイル名として解釈され、起動に失敗する。
   # shellcheck disable=SC2086
   if python3 -u $arg >> "results/${name}.log" 2>&1; then
     touch "results/${name}.done"

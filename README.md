@@ -3,25 +3,25 @@
 東京大学「映像メディア学」レポート課題の実験コード。
 
 対象論文: Lvmin Zhang, Anyi Rao, Maneesh Agrawala. "Adding Conditional Control to
-Text-to-Image Diffusion Models." **ICCV 2023 (main track)**, pp.3813-3824.
+Text-to-Image Diffusion Models." ICCV 2023 (main track), pp.3813-3824.
 DOI: [10.1109/ICCV51070.2023.00355](https://doi.org/10.1109/ICCV51070.2023.00355)
 
 ## 何を示したか
 
 ControlNet が期待どおりに働かなくなる条件を実験的に切り出し、
-**UNet へ注入される残差を直接測る**ことでその理由を説明した。
+UNet へ注入される残差を直接測ることでその理由を説明した。
 
 | # | 失敗条件 | 要点 |
 |---|---|---|
-| 1 | 推奨されている省メモリ設定が沈黙したまま出力を壊す | `enable_attention_slicing()` を有効にすると UNet 順伝播で NaN。例外も警告も出ず黒画像が返る。**原因は `get_attention_scores` が加算元を `torch.empty` で確保している点**（`beta=0` でも IEEE では 0×NaN=NaN）。`torch.zeros` に変えるだけで消える |
-| 2 | 条件地図の密度が下がると制御が消える | 60条件中15条件でエッジ画素率が 0。本来指定したかった輪郭との一致が 0.7329 → 0.2391 へ落ちる。**壊れているのは制御であって生成ではない**（画像自体は普通に出る） |
+| 1 | 推奨されている省メモリ設定が沈黙したまま出力を壊す | `enable_attention_slicing()` を有効にすると UNet 順伝播で NaN。例外も警告も出ず黒画像が返る。原因は `get_attention_scores` が加算元を `torch.empty` で確保している点（`beta=0` でも IEEE では 0×NaN=NaN）。`torch.zeros` に変えるだけで消える |
+| 2 | 条件地図の密度が下がると制御が消える | 60条件中15条件でエッジ画素率が 0。本来指定したかった輪郭との一致が 0.7329 → 0.2391 へ落ちる。壊れているのは制御であって生成ではない（画像自体は普通に出る） |
 | 3 | 推論時の既定値が構造整合に対して弱い | 既定 `controlnet_conditioning_scale=1.0` が最適な入力は 7件中 0件。ただしプロンプト追従と併せると妥当な妥協点 |
 
 **機構の直接証拠**: ControlNet 単体を 1 回順伝播させ、UNet へ渡される残差の RMS を測定。
 条件地図の密度と Spearman ρ=+0.875（密度>0 に限れば +0.669）。
 残差を空間方向に分解すると、条件が消えた入力でも空間成分は 67.5% 残る一方、
-大きさ自体が 3.3 分の 1 に縮む。**制御が消えるのは残差が消えるからではなく、
-条件地図に由来する成分が縮むからである。**
+大きさ自体が 3.3 分の 1 に縮む。制御が消えるのは残差が消えるからではなく、
+条件地図に由来する成分が縮むからである。
 
 **改善**: (1) 上記 `torch.empty` → `torch.zeros` の修正。20ステップの本番条件で、slicing を有効にしたまま 5 枚すべてが正常に生成され、slicing 無効時との画素差は平均 0.18（0〜255階調）。(2) 目標密度への二分探索 + CLAHE、密度連動 scale。生成 1 枚あたりの計算コストは増えない。
 低コントラスト側で構造整合が改善し（Δ中央値 +0.0665、共通参照）、プロンプト追従は下がらない。
@@ -29,8 +29,8 @@ ControlNet が期待どおりに働かなくなる条件を実験的に切り出
 
 ## GPU なしで 5 分で検証する
 
-`results/` に全実験の CSV を含めているので、**GPU も生成画像も無い環境で
-レポート本文の全数値を再現できる**。
+`results/` に全実験の CSV を含めているので、GPU も生成画像も無い環境で
+レポート本文の全数値を再現できる。
 
 ```bash
 pip install numpy pandas scipy opencv-python scikit-image
@@ -91,7 +91,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 
 | | |
 |---|---|
-| `pipeline.py` | パイプライン構築、条件地図の生成、指標（edge F1 / Chamfer）。**生成直後に NaN と単色を検出して例外を投げる** |
+| `pipeline.py` | パイプライン構築、条件地図の生成、指標（edge F1 / Chamfer）。生成直後に NaN と単色を検出して例外を投げる |
 | `dataset.py` | 入力画像。`skimage.data` 同梱 + 自作の合成画像のみ（出所は `LICENSE_DATA.md`） |
 | `exp.py` | 各実験。`python3 exp.py {smoke,exp1,expvar,exp2,exp2b,exp3,exp4,exp5,exp6}` |
 | `probe.py` | 機構の測定。ControlNet 単体を 1 回順伝播させ、UNet へ渡される残差の RMS を取る |
@@ -111,7 +111,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 
 | | |
 |---|---|
-| `stats_report.py` | **本文に載せた統計量を再現する**。本文の数値の出どころ |
+| `stats_report.py` | 本文に載せた統計量を再現する。本文の数値の出どころ |
 | `audit_numbers.py` | 本文の数値が手元のデータから出るかを機械的に照合する |
 | `audit_flow.py` | 本文の論理のつながりを点検する（予告の回収・用語の初出・指示語・記号の定義） |
 | `audit_consistency.py` | 提出物どうしの一貫性を点検する（画像数・共通の数値・ファイル一覧・名指し） |

@@ -9,11 +9,10 @@ import time
 import cv2
 import numpy as np
 
-# torch と PIL は生成にしか要らないので、ここでは読み込まない。
-# canny / edge_density / edge_f1 / chamfer は OpenCV と NumPy だけで完結する。
-# README が案内している「GPU なしで本文の数値を再現する」経路（stats_report.py →
-# import pipeline）は、この2つを先頭で読むと torch 未導入の環境で即座に落ちる。
-# 実際に使う get_pipe / generate / to_cond の中で読む。
+# torch と PIL は生成にしか要らないので、先頭では読み込まない。
+# canny / edge_density / edge_f1 / chamfer は OpenCV と NumPy だけで完結し、
+# GPU の無い環境でも本文の数値を再現できる（README の検証手順がこの経路を使う）。
+# torch と PIL は get_pipe / generate / to_cond の中で読む。
 
 MODEL_SD = "stable-diffusion-v1-5/stable-diffusion-v1-5"
 MODEL_CN = "lllyasviel/sd-controlnet-canny"
@@ -40,7 +39,7 @@ def get_pipe():
     p.scheduler = DPMSolverMultistepScheduler.from_config(
         p.scheduler.config, algorithm_type="dpmsolver++", use_karras_sigmas=True)
     p = p.to("mps")
-    # ★enable_attention_slicing() は使わない。
+    # enable_attention_slicing() は使わない。
     # HuggingFace の MPS 最適化ドキュメントは 64GB 未満の RAM で有効化を推奨しているが、
     # 本環境 (M1 / torch 2.2.2 / fp16) では slicing 有効時に UNet の順伝播で NaN が発生し、
     # 例外を出さないまま黒画像が返る。潜在変数の段階で NaN を確認済み (diag2.py)。
@@ -116,9 +115,8 @@ def generate(prompt, cond_img, seed, scale=1.0, steps=25, negative=None):
             negative_prompt=negative, generator=g)
     dt = time.time() - t
     rgb = np.array(out.images[0])
-    # ★出力の健全性を毎回検査する。
-    # 本環境では attention slicing 有効時に例外を出さないまま NaN が伝播し、
-    # 真っ黒な画像が返る事故が実際に起きた（diag2.py で確認）。
+    # 出力の健全性を毎回検査する。本環境では attention slicing 有効時に
+    # 例外を出さないまま NaN が伝播し、全画素 0 の画像が返る（diag2.py）。
     # 静かに壊れる失敗は下流の指標を全て無意味にするので、生成の直後に落とす。
     if not np.isfinite(rgb).all():
         raise RuntimeError(f"生成結果に NaN/Inf: prompt={prompt[:40]!r} seed={seed}")
