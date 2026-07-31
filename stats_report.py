@@ -249,8 +249,23 @@ def sec5_probe():
 
     inner = np.array([stats.spearmanr(g["density"], g["total_rms"]).correlation
                       for _, g in m.groupby("source")])
-    print(f"  画像内の相関 n={len(inner)}  中央値={np.median(inner):+.3f}  "
+    print(f"  画像内の相関（密度0を含む） n={len(inner)}  中央値={np.median(inner):+.3f}  "
           f"+0.98以上={int((inner >= .98).sum())}  すべて正={bool((inner > 0).all())}")
+    # 密度0の点は「密度を動かしていない比較」なので本節では使わない。
+    # 密度が正の範囲に限り、さらに密度が実際に段階的に動く画像だけを見る。
+    var = []
+    for src, g in m.groupby("source"):
+        g = g[g["density"] > 0]
+        if g["density"].nunique() < 3 or g["density"].max() / g["density"].min() <= 1.5:
+            continue
+        var.append((src, stats.spearmanr(g["density"], g["total_rms"]).correlation))
+    if var:
+        v = np.array([x[1] for x in var])
+        print(f"  画像内の相関（密度>0 かつ密度が段階的に動く画像のみ） {len(var)}枚  "
+              f"{v.min():+.3f}〜{v.max():+.3f}  中央値={np.median(v):+.3f}")
+        print(f"    対象: {', '.join(x[0] for x in var)}")
+        print(f"    除いた {len(inner) - len(var)}枚は、正の密度が3値未満か"
+              f"変化が1.5倍以下で系列内の勾配が取れない")
 
     e = load("exp6_depth_generality")
     ri = np.array([stats.spearmanr(g["cond_std"], g["total_rms"]).correlation
@@ -446,6 +461,33 @@ def sec8_tradeoff():
     print(f"    scale-構造整合  中央値={np.median(rf):+.3f}  正={int((rf > 0).sum())}/{len(rf)}")
     print(f"    scale-プロンプト 中央値={np.median(rc):+.3f}  負={int((rc < 0).sum())}/{len(rc)}"
           f"  最大={rc.max():+.3f}  Wilcoxon符号順位検定 p={w.pvalue:.3f}")
+
+    # 最適 scale が密度で動くかどうか（第4.3節の予想の検証）
+    rows = []
+    for src, g in d.groupby("source"):
+        a = g.groupby("scale").agg(f1=("f1", "mean"), clip=("clip", "mean"),
+                                   dens=("cond_density", "first"))
+        def norm(x):
+            return (x - x.min()) / (x.max() - x.min()) if x.max() > x.min() else x * 0
+        both = norm(a["f1"]) + norm(a["clip"])
+        rows.append(dict(source=src, dens=a["dens"].iloc[0],
+                         best_f1=a["f1"].idxmax(), best_both=both.idxmax()))
+    t = pd.DataFrame(rows)
+    for lab, col in (("構造整合だけ", "best_f1"), ("両指標の和", "best_both")):
+        r = stats.spearmanr(t["dens"], t[col])
+        print(f"    最適scaleと密度（{lab}） rho={r.correlation:+.3f} p={r.pvalue:.2f}"
+              f"  範囲 {t[col].min():g}〜{t[col].max():g}")
+    # 既定値 1.0 が両指標の和の平均でどこに来るか
+    m2 = d.groupby(["source", "scale"]).agg(f1=("f1", "mean"), clip=("clip", "mean"))
+    per = []
+    for src, g in m2.groupby(level=0):
+        g = g.droplevel(0)
+        def norm(x):
+            return (x - x.min()) / (x.max() - x.min()) if x.max() > x.min() else x * 0
+        per.append(norm(g["f1"]) + norm(g["clip"]))
+    avg = pd.concat(per, axis=1).mean(axis=1).sort_values(ascending=False)
+    print(f"    両指標の和の画像平均が最大の scale = {avg.index[0]:g}"
+          f"（{avg.iloc[0]:.3f}）／次点 {avg.index[1]:g}（{avg.iloc[1]:.3f}）")
 
 
 def sec41_slicing():
