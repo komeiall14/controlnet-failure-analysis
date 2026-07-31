@@ -127,11 +127,22 @@ def check_ai_log():
         return [("AI_USAGE_LOG.md が無い", "提出物3が作れない")]
     sec9 = rep.split("## 9. 生成AI利用")[-1].split("## 参考文献")[0]
     bad = []
-    for w in ("Claude", "CVPR 2023", "ICCV 2023", "guess_mode",
-              "stats_report.py", "audit_numbers.py", "標本数の水増し"):
-        if (w in log) != (w in sec9):
-            where = "利用ログのみ" if w in log else "第9節のみ"
-            bad.append((w, where))
+    # ログは簡易版なので、第9節より短いのは当然である。見るのは向きだけで、
+    # ログにあって第9節に無い主張（＝片方だけ直したときの食い違い）を落とす。
+    #
+    # 固定した語のリストで照合すると、語を差し替えられたときに素通りする。
+    # そこでログ側から固有名（ラテン文字語）と数を機械的に抜き、
+    # 一つずつ第9節にあるかを見る。日本語だけで書かれた主張は拾えないので、
+    # そこは目視に残る。
+    # 氏名・学籍番号などの見出し部は申告の中身ではないので対象から外す
+    body = log.split("## 使用した生成AI")[-1]
+    STOP = {"AI", "PDF", "GitHub", "URL"}
+    for w in set(re.findall(r"[A-Za-z][A-Za-z0-9_.]{2,}", body)) | set(
+            re.findall(r"\d{3,}", body)):
+        if w in STOP:
+            continue
+        if w not in sec9:
+            bad.append((w, "利用ログにしか無い"))
     # 設問が求める3項目
     for need in ("使用した生成AI", "主な用途", "自分で修正・判断した箇所"):
         if need not in log:
