@@ -1,4 +1,4 @@
-cond,peak_gib,broken,std
-slicingなし,1.1008,False,43.07
-slicingあり,0.657,True,0.0
-slicingあり修正,0.657,False,43.05
+cond,peak_gib,runs,spread,broken,std
+slicingなし,1.165,3,0.0002,False,43.07
+slicingあり,0.9047,3,0.25,True,0.0
+slicingあり修正,0.9047,3,0.0,False,43.05

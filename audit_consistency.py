@@ -72,7 +72,7 @@ def check_shared_numbers():
     rep, rd = read("REPORT.md"), read("README.md")
     bad = []
     # 小数第4位までの数値は実験値なので、README に出るなら本文にも同じ値があるはず
-    for m in re.finditer(r"\d+\.\d{4}", rd):
+    for m in re.finditer(r"\d+\.\d{2,4}", rd):
         v = m.group()
         if v not in rep:
             i = rd.index(v)

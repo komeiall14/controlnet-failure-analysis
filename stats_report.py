@@ -170,7 +170,7 @@ def sec42_density():
 
     # 条件が効いていないことの証拠：本来指定したかった輪郭との一致。
     # 生成画像があれば画像から直接計算し、無ければ image_metrics.csv を使う
-    # （画像は 163MB あるためリポジトリに含めていない）。
+    # （画像は 168MB あるためリポジトリに含めていない）。
     tbl = {n: im for n, im, _ in ds.real_images() + ds.synthetic_images()}
     have_images = os.path.exists(os.path.join(R, "images", f"{d.iloc[0]['tag']}_gen.png"))
     z = d[d["cond_density"] == 0]

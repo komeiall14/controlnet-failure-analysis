@@ -27,6 +27,7 @@ SOURCES = ("camera", "rocket")
 
 
 def main():
+    os.makedirs(os.path.join(P.OUT, "images"), exist_ok=True)
     tbl = {n: (im, pr) for n, im, pr in ds.real_images()}
     rows = []
     for src in SOURCES:

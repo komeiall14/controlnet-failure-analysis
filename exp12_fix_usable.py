@@ -40,7 +40,8 @@ N_IMAGES = 5
 
 
 def zeros_patch(self, query, key, attention_mask=None):
-    """本体と同じ手順。加算元を 0 で初期化する点だけが違う。"""
+    """本レポートの条件では attention_mask は常に None、upcast も無効なので、
+    原実装のその分岐を省いてある。差は加算元の初期化だけではない。"""
     buf = torch.zeros(query.shape[0], query.shape[1], key.shape[1],
                       dtype=query.dtype, device=query.device)
     sc = torch.baddbmm(buf, query, key.transpose(-1, -2),

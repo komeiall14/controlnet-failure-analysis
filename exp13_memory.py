@@ -6,7 +6,12 @@
 torch.mps.driver_allocated_memory() はプロセス全体の確保量（モデルの常駐分を
 含む）を返すため、条件による差が埋もれる。torch.mps.current_allocated_memory()
 はテンソルが確保している量を返し、確保・解放に追随するので、生成中に別スレッド
-から刻んで最大値を取れば、その条件の山が測れる。
+から刻んで最大値を取る。torch 2.2.2 の MPS にはピークを直接返す API が無い。
+
+標本化は山を取り逃すことしかできないので、観測された最大値は真の山の下界である。
+刻みを 5ms にすると slicing 側が 0.44〜0.66 GiB の間で毎回変わり、取り逃しが
+大きい。0.2ms まで細かくすると 0.907 GiB に何度も一致して収束するので、そちらを
+採る。さらに条件ごとに REPEAT 回まわして最大値を採る。
 
 比べるのは3条件。
   (a) slicing 無効                      … 本レポートが採った回避策
@@ -31,6 +36,7 @@ import dataset as ds
 import pipeline as P
 
 STEPS = 8          # 山の高さは1ステップで決まるので短くてよい
+REPEAT = 3         # 標本化は取り逃すだけなので、複数回の最大を採る
 PROMPT = "a photograph of a man with a camera on a tripod"
 
 
@@ -56,7 +62,7 @@ def patched_get_attention_scores(self, query, key, attention_mask=None):
 class Peak:
     """生成中の確保量を刻んで最大値を取る。"""
 
-    def __init__(self, dt=0.005):
+    def __init__(self, dt=0.0002):
         self.dt, self.on, self.peak = dt, False, 0
 
     def __enter__(self):
@@ -110,15 +116,22 @@ def main():
             p.disable_attention_slicing()
         Attention.get_attention_scores = (patched_get_attention_scores if patch
                                           else orig)
-        g = torch.Generator(device="cpu").manual_seed(0)
-        with Peak() as pk:
-            out = p(PROMPT, image=cond, num_inference_steps=STEPS,
-                    generator=g).images[0]
-        rgb = np.array(out)
-        broken = (not np.isfinite(rgb).all()) or float(rgb.std()) < 1.0
-        rows.append(dict(cond=name, peak_gib=round(pk.gib, 4),
-                         broken=broken, std=round(float(rgb.std()), 2)))
-        print(f"  {name:16s} 生成中の確保量のピーク {pk.gib:.3f} GiB"
+        peaks, broken, std = [], None, None
+        for _ in range(REPEAT):
+            g = torch.Generator(device="cpu").manual_seed(0)
+            with Peak() as pk:
+                out = p(PROMPT, image=cond, num_inference_steps=STEPS,
+                        generator=g).images[0]
+            peaks.append(pk.gib)
+            rgb = np.array(out)
+            broken = (not np.isfinite(rgb).all()) or float(rgb.std()) < 1.0
+            std = round(float(rgb.std()), 2)
+            torch.mps.empty_cache()
+        rows.append(dict(cond=name, peak_gib=round(max(peaks), 4),
+                         runs=REPEAT, spread=round(max(peaks) - min(peaks), 4),
+                         broken=broken, std=std))
+        print(f"  {name:16s} ピーク {max(peaks):.3f} GiB"
+              f"（{REPEAT}回の最大。振れ幅 {max(peaks) - min(peaks):.3f}）"
               f"  壊れた={broken}")
         Attention.get_attention_scores = orig
         torch.mps.empty_cache()

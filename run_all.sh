@@ -57,6 +57,7 @@ run fixusable "exp12_fix_usable.py"
 run bench "bench_dtype.py"
 # 修正版が省メモリ効果を保つか（生成中の確保量のピーク）
 run memory "exp13_memory.py"
+
 # 空の条件地図で scale を上げても指定が戻らないか（16枚。約30分）
 run amplify "exp14_amplify_empty.py"
 
