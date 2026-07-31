@@ -1,3 +1,10 @@
+"""黒画像がどの段階で生まれるかを切り分ける（第4.1節の前段）。
+
+VAE で復号する前の潜在変数を取り出して NaN の有無を見る。
+fp32 の VAE で復号し直しても消えないので、VAE の飽和ではなく
+UNet の順伝播が壊れていることが分かる。attention slicing の有無でも比べる。
+一回きりの診断なので run_all.sh には含めていない。
+"""
 import torch, time
 from diffusers import ControlNetModel, StableDiffusionControlNetPipeline, DDIMScheduler
 import dataset as ds, pipeline as P

@@ -35,7 +35,7 @@ def sec3_env():
     # DDIM 4 ステップで測る exp5・bench_dtype が混ざって別条件の値が入る。
     # 速度の母集団は run_one() が回した 20 ステップの生成だけである。
     SPEED = ("exp1_density", "exp2_scale", "exp2b_scale_ext",
-             "exp4_conflict", "expvar_seed", "smoke")
+             "expvar_seed", "smoke")
     s = []
     for n in SPEED:
         f = os.path.join(R, f"{n}.csv")
@@ -147,7 +147,7 @@ def sec42_density():
 
     # 条件が効いていないことの証拠：本来指定したかった輪郭との一致。
     # 生成画像があれば画像から直接計算し、無ければ image_metrics.csv を使う
-    # （画像は 158MB あるためリポジトリに含めていない）。
+    # （画像は 163MB あるためリポジトリに含めていない）。
     tbl = {n: im for n, im, _ in ds.real_images() + ds.synthetic_images()}
     have_images = os.path.exists(os.path.join(R, "images", f"{d.iloc[0]['tag']}_gen.png"))
     z = d[d["cond_density"] == 0]
@@ -330,6 +330,26 @@ def sec6_common_ref():
           "（本来指定したかった輪郭）で測り直す。")
     tbl = {n: im for n, im, _ in ds.real_images() + ds.synthetic_images()}
     d = load("exp3_improvement")
+    # 生成画像が無い環境では imread が1行ごとに警告を出すので、先に1回だけ確かめる
+    r0 = d.iloc[0]
+    probe = os.path.join(R, "images",
+                         f"e3_{r0['source']}_a{r0['alpha']}_s{r0['seed']}_before.png")
+    if not os.path.exists(probe):
+        # 生成画像が無い環境でも同じ値が出せる。exp7_policy.csv は同じ 90 対に
+        # ついて共通参照での F1（f1c_before / f1c_after）を持っている。
+        f = os.path.join(R, "exp7_policy.csv")
+        if not os.path.exists(f):
+            return print("  生成画像も exp7_policy.csv も無いので測り直せない")
+        print("  （出所: exp7_policy.csv。生成画像から直接計算した値と一致する）")
+        c = pd.read_csv(f)
+        for a_, g in c.groupby("alpha"):
+            t = g.groupby("source").agg(b=("f1c_before", "mean"),
+                                        a2=("f1c_after", "mean"))
+            d2 = t["a2"] - t["b"]
+            w = stats.wilcoxon(t["a2"], t["b"])
+            print(f"  α={a_}  n={len(t)}画像  改善={int((d2 > 0).sum())}/{len(t)}  "
+                  f"Δ中央値={d2.median():+.4f}  Wilcoxon p={w.pvalue:.4f}")
+        return
     rows = []
     for r in d.itertuples():
         ref = P.canny(tbl[r.source])

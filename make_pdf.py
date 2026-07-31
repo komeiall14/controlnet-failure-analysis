@@ -1,13 +1,12 @@
 """REPORT.md から提出用 PDF を作る。
 
 方針はメモリ reference_report_pdf_pipeline に従う。
-- /usr/bin/python3（Apple 製）の reportlab を使う。Homebrew 側には入っていない
 - 本文＝游明朝、見出し＝游ゴシック太字（Word 同梱 DFonts）
 - wordWrap='CJK' ＋ 左揃え。TA_JUSTIFY は日本語で間延びする
 - 文字は全て黒。A4、余白 20mm 前後
 - 生成後に欠字ゼロとページ数を検証する
 
-使い方: /usr/bin/python3 make_pdf.py
+使い方: python3 make_pdf.py
 """
 import os
 import re
@@ -24,8 +23,8 @@ from reportlab.platypus import (Image, PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 from reportlab.platypus import paraparser
 
-# 下付き・上付きの既定の変位（フォントサイズの 0.5 倍）は本文の行間に対して深く、
-# y_c の c が次行のインクに接近して別グリフのように見えていた。浅くする。
+# 下付き・上付きの既定の変位（フォントサイズの 0.5 倍）は本文の行間に対して深い。
+# 次の行のインクに接近するので浅くする。
 paraparser.subFraction = 0.22
 paraparser.supFraction = 0.40
 
@@ -293,8 +292,7 @@ def verify(path):
     #
     # 欠字は抽出後のテキストからは探せない。グリフの無い文字は抽出の時点で
     # すでに NUL に化けており、ord > 0x2000 の条件に掛からないためである。
-    # 上付きマイナス(U+207B)がこの穴をすり抜け、3.4×10⁻⁵ が PDF 上では
-    # 3.4×10□⁵ と指数の符号を落とした形で出ていた。原稿側を検査する。
+    # 原稿側を検査する。
     src = open(SRC, encoding="utf-8").read()
     missing = {c for c in src if ord(c) > 0x2000 and c not in "\n\r\t"
                and face.charToGlyph.get(ord(c)) is None}

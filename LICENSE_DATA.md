@@ -25,7 +25,8 @@ scikit-image (BSD-3-Clause) に同梱され、再配布が許諾されている�
 | coins | Brooklyn Museum Collection、既知の著作権制限なし |
 | immunohistochemistry | scikit-image 同梱の顕微鏡画像 |
 | shepp_logan_phantom, binary_blobs, checkerboard, logo | scikit-image が生成する合成画像 |
-| moon, page, horse | scikit-image 同梱のテスト画像 |
+| horse | CC0（Andreas Preuss 氏による。docstring に明記）|
+| moon, page | scikit-image 同梱のテスト画像 |
 
 各画像の詳細な帰属は scikit-image の公式ドキュメント
 <https://scikit-image.org/docs/stable/api/skimage.data.html> に従う。

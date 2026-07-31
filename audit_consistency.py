@@ -30,8 +30,6 @@ def read(name):
 def counts_in(txt, word):
     """「〜 N 画像」「N 点」のような記述を拾う。"""
     out = set()
-    for m in re.finditer(rf"(\d+)\s*(?:画像|点|枚){{0,1}}(?=[^0-9]|$)", txt):
-        pass
     for m in re.finditer(rf"{word}[^。\n]{{0,24}}?(\d+)\s*(?:画像|点|枚)", txt):
         out.add(int(m.group(1)))
     return out
@@ -58,9 +56,7 @@ def check_images():
         bad.append(("開発側の画像数", f"本文 {m.group(1)} 対 実体 {dev}"))
 
     # docstring と LICENSE
-    # 照合語は短く取る。「開発に使っていない」で探していたときは、実文の
-    # 「開発に一切使っていない 8 点」に「一切」が挟まって一致せず、
-    # まさにこの検査が動機に挙げている食い違いを素通りさせていた。
+    # 照合語は短く取る。長く取ると副詞が挟まっただけで一致しなくなる。
     for f, word in (("dataset.py", "使っていない"),
                     ("exp9_holdout.py", "使っていない"),
                     ("LICENSE_DATA.md", "取り分けた")):
@@ -96,6 +92,23 @@ def check_files():
         b = os.path.basename(f)
         if b not in rd:
             bad.append(("README に無い", f"results/{b}"))
+    # 図も見る。README が本文の図を取り違えていても、以前はここを素通りしていた
+    figs = {os.path.basename(f)
+            for f in glob.glob(os.path.join(HERE, "results", "figs", "*.png"))}
+    for b in sorted(figs):
+        if b not in rd:
+            bad.append(("README に無い", f"results/figs/{b}"))
+    # README が「本文が貼っている」と書いた図が、実際に本文に貼られているか
+    rep = read("REPORT.md")
+    used = set(re.findall(r"!\[[^\]]*\]\((results/figs/[^)]+)\)", rep))
+    used = {os.path.basename(u) for u in used}
+    m = re.search(r"本文が貼っているのは([^。|]*)", rd)
+    if m:
+        named = {x for x in figs if x in m.group(1)}
+        for b in sorted(named - used):
+            bad.append(("README は本文の図と書くが本文に無い", b))
+        for b in sorted(used - named):
+            bad.append(("本文が貼っているが README の説明に無い", b))
     for m in re.finditer(r"`([a-z0-9_]+\.py)`", rd):
         if not os.path.exists(os.path.join(HERE, m.group(1))):
             bad.append(("実体が無い", m.group(1)))
@@ -106,11 +119,15 @@ def check_named():
     """D: 本文が名指ししたスクリプト・CSV が実在するか。"""
     rep = read("REPORT.md")
     bad = []
-    for m in re.finditer(r"`([a-z0-9_]+\.(?:py|csv|md))`", rep):
+    for m in re.finditer(r"`([a-z0-9_]+\.(?:py|csv|md|png))`", rep):
         n = m.group(1)
-        if not (os.path.exists(os.path.join(HERE, n))
-                or os.path.exists(os.path.join(HERE, "results", n))):
+        if not any(os.path.exists(os.path.join(HERE, *p))
+                   for p in ((n,), ("results", n), ("results", "figs", n))):
             bad.append(n)
+    # 図はバッククォートではなくマークダウンの画像記法で書くので、別に見る
+    for m in re.finditer(r"!\[[^\]]*\]\(([^)]+)\)", rep):
+        if not os.path.exists(os.path.join(HERE, m.group(1))):
+            bad.append(m.group(1))
     return bad
 
 

@@ -1,19 +1,11 @@
 #!/bin/bash
 # 全実験を無人で順に完走させる。
-# API の利用上限とは無関係に動くので、離席中でも GPU 作業は止まらない。
 # 各段は CSV を1行ごとに追記するため、途中で落ちてもそこまでの結果は残る。
 cd "$(dirname "$0")" || exit 1
 L=results/run_all.log
 say() { echo "[$(date '+%m-%d %H:%M:%S')] $*" | tee -a "$L"; }
 
 say "=== run_all 開始 ==="
-
-# 既に走っている exp1 の完了を待つ（このスクリプトを二重に起動した場合の保険）
-if pgrep -f "exp.py exp1" > /dev/null; then
-  say "exp1 実行中。完了を待機"
-  while pgrep -f "exp.py exp1" > /dev/null; do sleep 30; done
-  say "exp1 終了 ($(grep -c 'f1=' results/exp1.log 2>/dev/null)枚)"
-fi
 
 run() {  # run <名前> <引数>
   local name=$1 arg=$2
@@ -32,9 +24,11 @@ run() {  # run <名前> <引数>
   fi
 }
 
+# 疎通確認。2枚。第3節の速度統計（n=157）はこの2枚も数える
+run smoke "exp.py smoke"
 # 機構の直接証拠。数分で終わり最も価値が高いので先に取る
 run probe "probe.py"
-# 第4.2節の中核。15画像×4コントラストの60条件（最も長い。数時間）
+# 第4.2節の中核。15画像×4コントラストの60条件（約2時間）
 run exp1 "exp.py exp1"
 # 条件内のシード分散。主張が分散に埋もれていないことの担保
 run expvar "exp.py expvar"

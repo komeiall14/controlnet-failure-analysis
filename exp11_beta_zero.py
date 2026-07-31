@@ -43,8 +43,6 @@ def main():
     for dtype in (torch.float16, torch.float32):
         for device in ("mps", "cpu"):
             for fill in (float("nan"), float("inf"), float("-inf"), 1e4):
-                if device == "cpu" and dtype == torch.float16 and fill == 1e4:
-                    pass
                 rows.append(check(dtype, device, fill))
     for r in rows:
         mark = "規約どおり" if r["honors_beta0"] else "★規約違反"

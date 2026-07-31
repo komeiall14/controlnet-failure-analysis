@@ -58,19 +58,19 @@ python3 audit_consistency.py  # 本文・README・コードの記述が食い違
 ## 実験を最初から回す
 
 ```bash
-pip install torch diffusers transformers accelerate safetensors
+pip install torch diffusers transformers accelerate safetensors matplotlib
 bash run_all.sh
 ```
 
-18 段ある。各段は `results/<名前>.done` を作り、再実行すると完了済みの段は
+19 段ある。各段は `results/<名前>.done` を作り、再実行すると完了済みの段は
 スキップされるので、中断しても続きから再開できる。この `.done` と実行ログは
 配布物に含めていないので、clone した直後は全段が対象になる。CSV は 1 行ごとに
 追記するため、途中で落ちてもそこまでの結果は残る。1 段が異常終了しても後段は
 続行し、ログに `★` 付きで記録する。
 
 所要時間は、実測できているのが 8 段で計 10.7 時間（最長は `exp3` の 7.1 時間、
-Apple M1）。残る 10 段は生成枚数から見て同程度かかるので、全段を通すと
-1 日前後を見込む。生成は 1 枚あたり 76〜184 秒（20ステップ・512×512、n=157、
+Apple M1）。残る段のうち重いのは `exp9_holdout`（約6時間）と `exp1`（約2時間）で、
+拡散を回さない段（`exp11_beta_zero` は数秒）は数分以内に終わる。全段で 1 日前後を見込む。生成は 1 枚あたり 76〜184 秒（20ステップ・512×512、n=157、
 中央値 106.5 秒、平均 110.8 秒）。
 
 ## 実行環境
@@ -119,7 +119,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `analysis.py` | 作図。`python3 analysis.py {exp1,exp2,exp3,probe,camera,all}`。本文の図1は `camera`、図2は `probe` |
 | `check_health.py` | 全生成画像の健全性を一括検査（黙って壊れていないかの確認） |
 | `diag.py` `diag2.py` | 黒画像の原因切り分け。潜在変数の NaN と attention slicing の関与を特定 |
-| `make_pdf.py` | 提出用 PDF の生成と検証（欠字・申し送り・句読点だけの行・ページ数） |
+| `make_pdf.py` | 提出用 PDF の生成と検証（欠字・申し送り・句読点だけの行・ページ数）。`pip install reportlab pypdf pypdfium2 pillow` と游明朝・游ゴシックが要る |
 
 ### 主な出力
 
@@ -146,6 +146,8 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `results/image_metrics.csv` | 生成画像から導いた測定値のキャッシュ |
 | `results/exp12_pixel_diff.csv` | 修正版と slicing 無効時の画素差（第4.1節の 0.18 の出所） |
 | `results/figs/*.png` | 作図の出力。本文が貼っているのは `fig_camera_sweep.png`（図1）と `fig4_residual.png`（図2）。`fig1_density.png` `fig2_scale.png` `fig3_improvement.png` は本文に採らなかった扱い（密度0を含む相関、1画像6行をプールした検定、定義できない順位相関）を含む参考図 |
+| `REPORT.md` | レポートの原稿。`make_pdf.py` がこれから PDF を作る |
+| `LICENSE_DATA.md` | 入力画像の出所と帰属 |
 | `48266454_新井滉明_映像メディア学_レポート.pdf` | 提出したレポート本体（8ページ）。生成AI利用ログは第9節にある |
 
 ## 注意している点

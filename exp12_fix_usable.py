@@ -89,6 +89,7 @@ def run(label, slicing, patch, targets):
                              mean=round(float(a.mean()), 2),
                              std=round(float(a.std()), 2),
                              mem_gb=round(peak / 1024 ** 3, 3)))
+            os.makedirs(os.path.join(P.OUT, "images"), exist_ok=True)
             cv2.imwrite(os.path.join(P.OUT, "images",
                                      f"e12_{label}_{name}.png"), a)
             print(f"  {label:12s} {name:12s} 壊れ={bad}  f1={rows[-1]['f1']:.4f}  "
