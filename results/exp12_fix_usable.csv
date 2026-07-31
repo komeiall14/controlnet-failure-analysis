@@ -1,4 +1,4 @@
-cond,source,broken,f1,mean,std,mem_gb
+cond,source,broken,f1,mean,std,proc_mem_gb
 slicingなし,astronaut,False,0.8006,108.94,78.5,5.331
 slicingなし,camera,False,0.7577,87.95,44.05,5.331
 slicingなし,coffee,False,0.6568,102.37,49.95,5.331

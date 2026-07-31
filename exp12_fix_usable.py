@@ -88,12 +88,12 @@ def run(label, slicing, patch, targets):
                              f1=round(P.edge_f1(cond, a)["f1"], 4),
                              mean=round(float(a.mean()), 2),
                              std=round(float(a.std()), 2),
-                             mem_gb=round(peak / 1024 ** 3, 3)))
+                             proc_mem_gb=round(peak / 1024 ** 3, 3)))
             os.makedirs(os.path.join(P.OUT, "images"), exist_ok=True)
             cv2.imwrite(os.path.join(P.OUT, "images",
                                      f"e12_{label}_{name}.png"), a)
             print(f"  {label:12s} {name:12s} 壊れ={bad}  f1={rows[-1]['f1']:.4f}  "
-                  f"std={rows[-1]['std']:.1f}  メモリ {rows[-1]['mem_gb']:.2f}GB",
+                  f"std={rows[-1]['std']:.1f}  プロセス全体の確保 {rows[-1]['proc_mem_gb']:.2f}GB",
                   flush=True)
     finally:
         Attention.get_attention_scores = orig
@@ -124,7 +124,7 @@ def main():
     d = pd.DataFrame(rows)
     print(d.groupby("cond").agg(壊れた枚数=("broken", "sum"), n=("broken", "size"),
                                 edgeF1平均=("f1", "mean"),
-                                メモリGB=("mem_gb", "max")).round(4).to_string())
+                                プロセス確保GB=("proc_mem_gb", "max")).round(4).to_string())
     pixel_diff([r["source"] for r in rows if r["cond"] == "slicingあり修正"
                 and not r["broken"]])
 
