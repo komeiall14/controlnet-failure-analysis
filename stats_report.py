@@ -136,6 +136,15 @@ def sec42_density():
     nz = d[d["cond_density"] > 0]
     r_nz = stats.spearmanr(nz["cond_density"], nz["f1"])
     print(f"  全60条件            rho={r_all.correlation:+.3f} p={r_all.pvalue:.2g}")
+    # 45条件は1画像から最大4点出るので独立でない。本文はこの断りを添えて出す。
+    dd = nz.drop_duplicates(subset=["source", "cond_density", "f1"])
+    r_dd = stats.spearmanr(dd["cond_density"], dd["f1"])
+    inner = [(src, stats.spearmanr(g["cond_density"], g["f1"]).correlation)
+             for src, g in nz.groupby("source") if g["cond_density"].nunique() >= 3]
+    print(f"  密度>0・重複除去 {len(dd)}件  rho={r_dd.correlation:+.3f} p={r_dd.pvalue:.2g}")
+    print(f"  画像内（密度が3値以上動く {len(inner)}画像）  "
+          f"正 {sum(r > 0 for _, r in inner)}/{len(inner)}  "
+          f"{', '.join(f'{n}={r:+.2f}' for n, r in inner)}")
     print(f"  密度>0の45条件のみ  rho={r_nz.correlation:+.3f} p={r_nz.pvalue:.2g}")
     print("  ※ 条件地図が空だと edge F1 は定義上 0 を返すので、前者は押し上げられている")
 
