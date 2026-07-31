@@ -21,6 +21,9 @@ for f in files:
             (f, "壊れているはずが正常" if not degraded else "想定どおり退化"))
     elif degraded:
         bad.append((f, f"退化 std={im.std():.2f} mean={im.mean():.1f}"))
+if not files:
+    print("生成画像が無いので検査していない（results/images は配布物に含めない）")
+    sys.exit(0)
 print(f"検査 {len(files)}枚 / 異常 {len(bad)}枚"
       f" / 想定どおり壊れている {len(expected_broken)}枚（第4.1節の証拠）")
 for f, why in bad[:15]: print(f"  ★{os.path.basename(f)}: {why}")

@@ -112,6 +112,17 @@ def check_files():
     for m in re.finditer(r"`([a-z0-9_]+\.py)`", rd):
         if not os.path.exists(os.path.join(HERE, m.group(1))):
             bad.append(("実体が無い", m.group(1)))
+    # README が挙げる CSV の実在も見る。片方向だと架空の出力を書いても通る
+    for m in re.finditer(r"results/([a-z0-9_]+\.csv)", rd):
+        if not os.path.exists(os.path.join(HERE, "results", m.group(1))):
+            bad.append(("実体が無い", f"results/{m.group(1)}"))
+    # 図は名前だけでなく図番号との組で照合する。番号の取り違えは名前の集合では通る
+    order = [os.path.basename(u) for u in
+             re.findall(r"!\[[^\]]*\]\((results/figs/[^)]+)\)", rep)]
+    for i, name in enumerate(order, 1):
+        m = re.search(re.escape(name) + r"`?（図(\d)）", rd)
+        if m and int(m.group(1)) != i:
+            bad.append(("README の図番号が本文と違う", f"{name} は本文の図{i} だが README は図{m.group(1)}"))
     return bad
 
 

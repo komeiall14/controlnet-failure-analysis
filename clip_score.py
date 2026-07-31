@@ -73,7 +73,7 @@ def annotate(csv_name, tag_col="tag"):
     for r, s in zip(keep, sc):
         r["clip"] = round(s, 4)
     with open(path, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()) + (["clip"] if "clip" not in rows[0] and any("clip" in r for r in rows) else []))
         w.writeheader()
         w.writerows(rows)
     print(f"  {csv_name}: {len(sc)}枚に CLIP を付与 "

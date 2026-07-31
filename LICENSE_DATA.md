@@ -24,7 +24,8 @@ scikit-image (BSD-3-Clause) に同梱され、再配布が許諾されている�
 | clock | public domain（撮影者 Stefan van der Walt） |
 | coins | Brooklyn Museum Collection、既知の著作権制限なし |
 | immunohistochemistry | scikit-image 同梱の顕微鏡画像 |
-| shepp_logan_phantom, binary_blobs, checkerboard, logo | scikit-image が生成する合成画像 |
+| binary_blobs | scikit-image が実行時に生成する合成画像 |
+| shepp_logan_phantom, checkerboard, logo | scikit-image 同梱の画像（docstring に個別の出所記載なし。moon・page と同じ扱い）|
 | horse | CC0（Andreas Preuss 氏による。docstring に明記）|
 | moon, page | scikit-image 同梱のテスト画像 |
 

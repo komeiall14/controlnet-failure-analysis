@@ -207,6 +207,13 @@ def fig_camera_sweep():
     if len(c) < 4:
         return print("exp1: camera の系列が揃っていない")
     imgs = os.path.join(OUT, "images")
+    # results/images は配布物に含めていない。無い状態で描くと8枚とも
+    # 「画像なし」の図ができ、本文が図1として貼っている PNG を黙って上書きする。
+    missing = [r.tag for r in c.itertuples()
+               if not os.path.exists(os.path.join(imgs, f"{r.tag}_cond.png"))]
+    if missing:
+        return print("  fig_camera_sweep: 生成画像が無いので描き直さない"
+                     f"（{len(missing)}件不足。既存の PNG をそのまま残す）")
     fig, ax = plt.subplots(2, len(c), figsize=(3.6 * len(c), 7.0))
     for j, r in enumerate(c.itertuples()):
         for i, kind in enumerate(("cond", "gen")):
