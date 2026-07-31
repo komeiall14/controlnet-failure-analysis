@@ -117,6 +117,21 @@ def sec41_fix():
               f"平均 {t['mean_abs_diff'].mean():.2f}  最大 {t['max_abs_diff'].max():.0f}")
 
 
+def sec41_mem():
+    head("第4.1節 修正が省メモリ効果を保つか（exp13_memory.py）")
+    f = os.path.join(R, "exp13_memory.csv")
+    if not os.path.exists(f):
+        return print("  exp13_memory.csv が無い。`python3 exp13_memory.py` を実行する")
+    d = pd.read_csv(f)
+    print(d.to_string(index=False))
+    a_ = dict(zip(d["cond"], d["peak_gib"]))
+    if "slicingなし" in a_ and "slicingあり修正" in a_:
+        g = a_["slicingなし"] - a_["slicingあり修正"]
+        print(f"  修正版は slicing 無効時より {g:+.3f} GiB"
+              f"（{g / a_['slicingなし'] * 100:+.1f}%）。"
+              f"壊れたまま使う slicingあり と同じ {a_['slicingあり修正']:.3f} GiB")
+
+
 def sec41_bench():
     head("第4.1節 fp16 と fp32 の生成時間（ウォームアップ1回を捨てて3回）")
     f = os.path.join(R, "bench_dtype.csv")
@@ -525,7 +540,7 @@ def sec41_slicing():
 
 if __name__ == "__main__":
     for fn in (sec3_env, sec41_slicing, sec41_cause, sec41_buffer, sec41_beta,
-               sec41_fix, sec41_bench, sec42_density, sec5_probe, sec5_spatial,
+               sec41_fix, sec41_mem, sec41_bench, sec42_density, sec5_probe, sec5_spatial,
                sec6_improvement, sec6_common_ref, sec6_policy, sec6_holdout,
                sec8_tradeoff):
         fn()

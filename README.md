@@ -66,7 +66,7 @@ pip install torch diffusers transformers accelerate safetensors matplotlib
 bash run_all.sh
 ```
 
-19 段ある。各段は `results/<名前>.done` を作り、再実行すると完了済みの段は
+20 段ある。各段は `results/<名前>.done` を作り、再実行すると完了済みの段は
 スキップされるので、中断しても続きから再開できる。この `.done` と実行ログは
 配布物に含めていないので、clone した直後は全段が対象になる。拡散を回す重い段（`exp.py` 系と `exp9_holdout`）は CSV を 1 行ごとに追記するので、
 途中で落ちてもそこまでの結果は残る。軽い段は完了時に一括で書く。1 段が異常終了しても後段は
@@ -106,6 +106,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `exp10_buffer_content.py` | 加算元バッファの中身を直接測る（非有限値の割合と生のビット列） |
 | `exp11_beta_zero.py` | `baddbmm` が beta=0 で加算元を無視するかを MPS / CPU × fp16 / fp32 で調べる。モデルを読まないので数秒 |
 | `exp12_fix_usable.py` | 修正が実用になるかを本番条件（20ステップ）で確認する |
+| `exp13_memory.py` | 修正が省メモリ効果を保つか。生成中の確保量を刻んでピークを取る |
 | `exp9_holdout.py` | 開発に使っていない画像で、改善と適用条件をそのまま試す |
 | `diag3_slicing.py` | 原因探索用。`get_attention_scores` を包んでスコア行列の大きさを記録する |
 | `clip_score.py` | 生成済み画像に CLIP スコアを後付けする（拡散を回さない） |
@@ -149,6 +150,7 @@ Stable Diffusion v1.5 + sd-controlnet-canny（fp16）。
 | `results/smoke.csv` | 疎通確認の 2 枚 |
 | `results/image_metrics.csv` | 生成画像から導いた測定値のキャッシュ |
 | `results/exp12_pixel_diff.csv` | 修正版と slicing 無効時の画素差（第4.1節の 0.18 の出所） |
+| `results/exp13_memory.csv` | 3条件の生成中の確保量のピーク（第4.1節の 1.104 / 0.657 GiB の出所） |
 | `results/figs/*.png` | 作図の出力。本文が貼っているのは `fig_camera_sweep.png`（図1）と `fig4_residual.png`（図2）。`fig1_density.png` `fig2_scale.png` `fig3_improvement.png` は本文に採らなかった扱い（密度0を含む相関、1画像6行をプールした検定、定義できない順位相関）を含む参考図 |
 | `REPORT.md` | レポートの原稿。`make_pdf.py` がこれから PDF を作る |
 | `LICENSE_DATA.md` | 入力画像の出所と帰属 |

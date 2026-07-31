@@ -13,9 +13,9 @@
 見るのは 2 点。
   1. 生成が成立するか（NaN・単色でないか）
   2. 出力の質が (a) と揃うか（構造整合 edge F1 と、両者の画素差）
-  ※ slicing 本来の目的である省メモリ効果は測っていない（本文第4.1節にも明記）。
-     torch.mps.driver_allocated_memory() が返すのはプロセス全体の確保量で、
-     生成中の活性化のピークは取れないため、この API では扱えない。
+  ※ 省メモリ効果そのものは exp13_memory.py で別に測る。ここで記録している
+     proc_mem_gb は torch.mps.driver_allocated_memory()（プロセス全体の確保量）で、
+     モデルの常駐分を含むため条件による差は出ない。参考値として残している。
 
 出力: results/exp12_fix_usable.csv
     python3 exp12_fix_usable.py

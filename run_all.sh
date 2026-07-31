@@ -55,6 +55,8 @@ run beta0 "exp11_beta_zero.py"
 run fixusable "exp12_fix_usable.py"
 # fp16 と fp32 の生成時間。ウォームアップ1回を捨てて3回
 run bench "bench_dtype.py"
+# 修正版が省メモリ効果を保つか（生成中の確保量のピーク）
+run memory "exp13_memory.py"
 
 # --- 第5節：残差の空間分解 ---
 run spatial "probe_spatial.py"
